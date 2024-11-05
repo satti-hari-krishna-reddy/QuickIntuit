@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "Enhanced AI Web Augmentation",
+    "version": "1.0",
+    "description": "Injects AI-driven overlays and dynamic widgets into existing webpages.",
+    "permissions": ["storage", "activeTab", "scripting"],
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+      }
+    ]
+  }
+  
