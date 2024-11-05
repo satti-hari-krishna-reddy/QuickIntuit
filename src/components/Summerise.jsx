@@ -19,7 +19,7 @@ function TextAdjustComponent({ text, clear }) {
     const [type, setType] = useState('Select Type');
     const [length, setLength] = useState('Select Length');
     const [summary, setSummary] = useState('');
-    const [loadingMessage, setLoadingMessage] = useState('Generating summary...');
+    const [loadingMessage, setLoadingMessage] = useState('   Generating summary...   ');
     
     const handleAdjustClick = () => setAdjustOpen(true);
 
@@ -61,7 +61,7 @@ function TextAdjustComponent({ text, clear }) {
     const parseMarkdown = (markdown) => marked(markdown);
 
     return (
-        <div className="relative container mx-auto p-4 max-w-md rounded-md shadow-2xl z-[1000]"
+       <div className="relative container mx-auto p-4 max-w-md rounded-lg shadow-lg z-[1000] bg-gray-50"
         style={{
             backdropFilter: 'blur(18px)', 
         }}>
@@ -78,7 +78,10 @@ function TextAdjustComponent({ text, clear }) {
                         </span>
                     </div> 
                     
-                    <div className="cursor-pointer" onClick={clear}>X</div>
+                    <div className="cursor-pointer text-gray-500 font-semibold hover:text-red-500 transition duration-150" 
+                                onClick={clear}>
+                            X
+                        </div>
                     </div>
                     <div className="content-box p-4 bg-white rounded-md shadow-md">
                         <div
