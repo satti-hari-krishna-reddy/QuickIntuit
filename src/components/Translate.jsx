@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Loader from './Loader';
+import { detectLanguage } from '../detect-language';
+import { translateText } from '../translate';
+import PropTypes from 'prop-types';
 
 function injectTailwindStyles() {
     const tailwindLink = document.createElement('link');
@@ -7,21 +11,29 @@ function injectTailwindStyles() {
     document.head.appendChild(tailwindLink);
 }
 
-const Translate = () => {
-    const [text, setText] = useState('');
-    const [loadingMessage, setLoadingMessage] = useState('Detecting the language...');
-
-    const handleTranslate = () => {
-        // Add your translation logic here
-        setTranslatedText(`Translated: ${text}`);
-    };
-
-    return (
-        <div className="relative container mx-auto p-4 max-w-md rounded-md shadow-2xl z-[1000]"
-        style={{
-            backdropFilter: 'blur(18px)', 
-        }}>
+// Supported language pairs
+const supportedPairs = {
+    en: ['ar', 'bn', 'de', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'nl', 'pl', 'pt', 'ru', 'th', 'tr', 'vi', 'zh'],
+    ar: ['en'],
+    bn: ['en'],
+    de: ['en'],
+    es: ['en'],
+    fr: ['en'],
+    hi: ['en'],
+    it: ['en'],
+    ja: ['en'],
+    ko: ['en'],
+    nl: ['en'],
+    pl: ['en'],
+    pt: ['en'],
+    ru: ['en'],
+    th: ['en'],
+    tr: ['en'],
+    vi: ['en'],
+    zh: ['en'],
 };
+
+// Language codes mapped to names
 const languageMap = {
     af: "Afrikaans",
     ca: "Catalan",
@@ -128,6 +140,116 @@ const languageMap = {
     zu: "Zulu",
 };
 
+// Get the language name based on code
 const getLanguageName = (code) => languageMap[code] || "Unknown language";
 
-export default Translate
+const Translate = ({ initialText, clear }) => {
+    const [text, setText] = useState(initialText);
+    const [originalText] = useState(initialText); // Keep the original text stored
+    const [loadingMessage, setLoadingMessage] = useState('Detecting the language...');
+    const [srcLang, setSrcLang] = useState('');
+    const [tgtLang, setTgtLang] = useState('');
+    const [loading, setLoading] = useState(true); // Initially loading for language detection
+
+    useEffect(() => {
+        injectTailwindStyles();
+        detectInitialLanguage();
+    }, []);
+
+    // Detect the initial language of the input text
+    const detectInitialLanguage = async () => {
+        try {
+            const result = await detectLanguage(text);
+            setLoading(false);
+            setSrcLang(result);
+        } catch (error) {
+            console.error("Error detecting language:", error);
+            setLoadingMessage("Error detecting language. Try again later.");
+            setTimeout(() => {clear();}, 3000);
+        }
+    };
+
+    // Handle text translation
+    const handleTranslate = async () => {
+        if (!srcLang || !tgtLang) return;
+        
+        setLoadingMessage("Translating text...");
+        setLoading(true);
+        
+        try {
+            const translatedText = await translateText(originalText, srcLang, tgtLang); // Always translate original text
+            setText(translatedText);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error translating text:", error);
+            setLoadingMessage("Error translating text. Try again later.");
+            setTimeout(() => {clear();}, 3000);
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="relative container mx-auto p-4 max-w-md rounded-lg shadow-lg z-[1000] bg-gray-50"
+            style={{ backdropFilter: 'blur(18px)' }}>
+            
+            {loading ? (
+                <Loader message={loadingMessage} />
+            ) : (
+                <>
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="text-xs text-white bg-blue-500 rounded-full px-3 py-1 font-semibold">
+                            Language Translator
+                        </div>
+                        <button className="cursor-pointer text-gray-500 font-semibold hover:text-red-500 transition duration-150" 
+                                onClick={clear}>
+                            X
+                        </button>
+                    </div>
+
+                    <div className="content-box p-4 bg-white rounded-md shadow-md mb-4">
+                        <div className="mb-2 text-sm font-semibold text-gray-700">
+                            {srcLang && <span>Detected Language: {getLanguageName(srcLang)}</span>}
+                        </div>
+                        <div className="text-md font-normal text-gray-700 whitespace-pre-wrap w-full mb-4">
+                            {text}
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="text-md font-semibold text-gray-700 mb-1">
+                                Translate to:
+                            </label>
+                            <select
+                                value={tgtLang}
+                                onChange={(e) => setTgtLang(e.target.value)}
+                                className="select-option text-sm px-2 py-1 text-gray-600 border border-gray-300 rounded-md w-full"
+                            >
+                                <option hidden>Select Language</option>
+                                {supportedPairs[srcLang]?.map((lang) => (
+                                    <option key={lang} value={lang}>
+                                        {getLanguageName(lang)}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <button 
+                            className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-md w-full transition duration-200"
+                            onClick={handleTranslate}>
+                            Translate
+                        </button>
+                    </div>
+                </>
+            )}
+        </div>
+    );
+};
+
+
+Translate.propTypes = {
+    initialText: PropTypes.string.isRequired,
+};
+Translate.propTypes = {
+    clear: PropTypes.func.isRequired,
+};
+
+export default Translate;
