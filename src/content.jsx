@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client';
 import AiOverlayIcon from './components/AiOverlayIcon';
 import AiOptions from './components/AiOptions';
 import TextAdjustComponent from './components/Summerise';
+import Translate from './components/Translate';
 // import RewriteComponent from './components/Rewrite';  // Example component
 // import AnalyzeComponent from './components/Analyze';  // Example component
 
@@ -76,9 +77,9 @@ const handleOptionSelect = (option) => {
       console.log('Summarizing text:', selectedText);
       root.render(<TextAdjustComponent text={selectedText} clear={removeFloatingComponentContainer} />);
       break;
-    // case 'rewrite':
-    //   root.render(<RewriteComponent text={selectedText} />);
-    //   break;
+    case 'translate':
+      root.render(<Translate initialText={selectedText} clear={removeFloatingComponentContainer}/>);
+      break;
     // case 'analyze':
     //   root.render(<AnalyzeComponent text={selectedText} />);
     //   break;
