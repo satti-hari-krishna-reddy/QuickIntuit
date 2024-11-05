@@ -1,5 +1,3 @@
-const translation = {}; // Placeholder for the browser implementation
-
 const initDetector = async () => {
     const canDetect = await translation.canDetect();
     let detector;
@@ -21,7 +19,9 @@ export const detectLanguage = async (text) => {
     if (status === 'Downloading') {
         return 'Model is currently downloading.'
     }
+    console.log('Detecting language for:', text);
     const results = await detector.detect(text);
     const detectedLanguage = results[0].detectedLanguage;
+    console.log('Detected language:', detectedLanguage);
     return detectedLanguage;
 };

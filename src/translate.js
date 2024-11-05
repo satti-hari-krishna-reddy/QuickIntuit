@@ -1,9 +1,5 @@
-import { detectLanguage } from "./detect-language";
-const translation = {}; // Placeholder for the browser implementation
-
-const initTranslator = async (text, targetLang) => {
-    const srcLang = await detectLanguage(text);
-    const languagePair = { sourceLanguage: srcLang, targetLanguage: targetLang };
+const initTranslator = async (srcLang, tgtLang ) => {
+    const languagePair = { sourceLanguage: srcLang, targetLanguage: tgtLang };
     const canTranslate = await translation.canTranslate(languagePair);
     let translator;
     if (canTranslate !== 'no') {
@@ -21,11 +17,13 @@ const initTranslator = async (text, targetLang) => {
     
 };
 
- export const translateText = async (text, targetLang) => {
-    const { translator, status } = await initTranslator(text, targetLang);
+ export const translateText = async (text, srcLang, tgtLang) => {
+  console.log(" here is the source language", srcLang, "and here is the target language", tgtLang);
+    const { translator, status } = await initTranslator(srcLang, tgtLang);
     if (status === 'Downloading') {
         return 'Model is currently downloading.';
     }
     const translatedText = await translator.translate(text);
+    console.log('Translated text:', translatedText);
     return translatedText;
 }
