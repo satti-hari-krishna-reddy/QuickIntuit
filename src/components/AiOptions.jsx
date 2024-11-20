@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 const AiOptions = ({ onOptionSelect }) => {
   const aiOptionsList = [
     { label: "summarize", onClick: () => onOptionSelect("summarize") },
-    { label: "rewrite", onClick: () => onOptionSelect("rewrite") },
+    { label: "analyze", onClick: () => onOptionSelect("analyze") },
     { label: "translate", onClick: () => onOptionSelect("translate") },
+    { label: "AI Smart Table", onClick: () => onOptionSelect("ai_table") },
   ];
 
   const containerStyle = {
