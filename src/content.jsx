@@ -3,6 +3,8 @@ import AiOverlayIcon from './components/AiOverlayIcon';
 import AiOptions from './components/AiOptions';
 import TextAdjustComponent from './components/Summerise';
 import Translate from './components/Translate';
+import ChatInterface from './components/ChatInterface';
+import AiSmartTable from './components/AiSmartTable';
 // import RewriteComponent from './components/Rewrite';  // Example component
 // import AnalyzeComponent from './components/Analyze';  // Example component
 
@@ -78,11 +80,14 @@ const handleOptionSelect = (option) => {
       root.render(<TextAdjustComponent text={selectedText} clear={removeFloatingComponentContainer} />);
       break;
     case 'translate':
-      root.render(<Translate initialText={selectedText} clear={removeFloatingComponentContainer}/>);
+      root.render(<Translate initialText={selectedText} clear={removeFloatingComponentContainer} />);
       break;
-    // case 'analyze':
-    //   root.render(<AnalyzeComponent text={selectedText} />);
-    //   break;
+    case 'analyze':
+      root.render(<ChatInterface />);
+      break;
+    case 'ai_table':
+      root.render(<AiSmartTable initialText={selectedText} clear={removeFloatingComponentContainer} />);
+      break;
     default:
       root.unmount();
   }
