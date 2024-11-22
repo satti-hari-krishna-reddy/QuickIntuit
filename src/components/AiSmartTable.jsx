@@ -9,11 +9,20 @@ function injectTailwindStyles() {
     document.head.appendChild(tailwindLink);
 }
 
-// Supported modes (no changes to this part)
+
 const supportedModes = {
     "⭐ Pros and Cons Table": "summerise this textual data into a table of pros and cons",
-    "🔑 Key Takeaways": "Create a side-by-side layout with key takeaways and explanations.",
-    "⚖️ Compare & Contrast": "Highlight similarities and differences side by side table.",
+    "🔑 Key Takeaways": "Summarize the text into a table with two columns: 'Key Point' and 'Details'. Focus on capturing the most important highlights and their explanations.",
+    "⚖️ Compare & Contrast": "create a similarities and differences table.",
+    "📋 Actionable Insights": "Extract actionable recommendations or next steps from the text in a table format with two columns: 1. Actionable Insight: The specific action or strategy. 2. Reasoning: Why this action is important or relevant.",
+    "🔍 Cause-Effect Breakdown": "Identify cause-and-effect relationships from the text and present them in a table with two columns: 1. Cause: The reason or trigger. 2. Effect: The result or consequence.",
+    "⚙️ Decision Flow Chart": "Extract decision-making information from the text and create a table with three columns: 1. Decision Point: A key question or decision step. 2. Options: Available choices or paths. 3. Outcome: The result of each choice or path.",
+    "❓ Questions & Answers": "Create a table with two columns: 1. Question: A relevant question about the text. 2. Answer: A concise answer based on the content.",
+    "📊 Data Analysis Table": "Analyze the following text to extract relevant data points and present them in a structured table. Include columns for numerical values, categories, or key descriptive details mentioned in the text. Focus on factual accuracy, clearly summarizing the data. If no explicit data exists, do not infer but organize available facts logically in tabular format.",
+    "📅 Timeline Table": "Please extract the sequence of events mentioned in the text and present them in a timeline table format. The table should have three columns: 'Event', 'Date/Time'. For each event, provide the name or title of the event, the date or time it occurred.",
+    "🧠 Relationship Mapping Table": "Analyze the relationships or connections between elements in the text and present them in a table with three columns: 'Element 1', 'Connection/Relation', and 'Element 2'. Include thematic or logical connections where relevant.",
+    "📖 Chapter Summary": "Please generate a summary for each chapter or section of the text in a table format. The table should have three columns: 'Chapter Number', 'Chapter Title', and 'Key Points'. For each chapter, provide the chapter number, title, and a brief summary of the main points covered.",
+    "😊 Sentiment Analysis": "Analyze the sentiment of the text and create a table with two columns: 1. Text Segment: A specific part of the text. 2. Sentiment: Positive, negative, or neutral.",
 };
 
 const AiSmartTable = ({ initialText, clear }) => {
@@ -21,6 +30,8 @@ const AiSmartTable = ({ initialText, clear }) => {
     const [selectedMode, setSelectedMode] = useState('');
     const [loading, setLoading] = useState(false);
     const [parsedTable, setParsedTable] = useState(null);
+
+    let session = undefined
 
     useEffect(() => {
         injectTailwindStyles();
@@ -39,6 +50,14 @@ const AiSmartTable = ({ initialText, clear }) => {
         return { headers, rows: dataRows };
     };
 
+    const clearSession = () => {
+        if (session) {
+            session.destroy();
+            session = undefined;
+        }
+    };
+
+
     const handleCreateTable = async () => {
         setLoading(true);
         setParsedTable(null);
@@ -54,8 +73,9 @@ const AiSmartTable = ({ initialText, clear }) => {
 
             const { available } = await ai.languageModel.capabilities();
             if (available !== "no") {
-                const session = await ai.languageModel.create({
-                    temperature : 0.5,
+                clearSession();
+                 session = await ai.languageModel.create({
+                    temperature : 0.2,
                     topK : 3,
                 });
                 console.log('Prompt:', finalPrompt);
@@ -79,8 +99,10 @@ const AiSmartTable = ({ initialText, clear }) => {
     };
 
     const renderTable = () => {
-        if (!parsedTable) return null;
-    
+        if (!parsedTable) {
+            console.log('No table data to render.');
+            return null;
+        }
         return (
             <div className="relative max-w-full overflow-x-auto border border-gray-300 rounded-lg">
                 <table className="table-auto w-full text-sm border-collapse">
@@ -145,7 +167,11 @@ const AiSmartTable = ({ initialText, clear }) => {
                         </div>
                         <button
                             className="cursor-pointer text-gray-500 font-semibold hover:text-red-500 transition duration-150"
-                            onClick={clear}
+                            onClick={() => {
+                                clear();
+                                clearSession();
+                              }}
+                              
                         >
                             X
                         </button>
@@ -155,8 +181,11 @@ const AiSmartTable = ({ initialText, clear }) => {
                         <div>
                             {renderTable()}
                             <button
-                                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 mt-4 rounded-md w-full transition duration-200"
-                                onClick={() => setParsedTable(null)}
+                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 mt-4 rounded-md w-full transition duration-200"
+                                onClick={() => {
+                                    setParsedTable(null);
+                                    clearSession();
+                                }}
                             >
                                 Back
                             </button>
@@ -200,3 +229,4 @@ AiSmartTable.propTypes = {
 };
 
 export default AiSmartTable;
+
