@@ -29,6 +29,14 @@ function Write({ clear }) {
     };
 
     const handleWriteClick = async () => {
+        if (prompt.trim() === '') {
+            setPrompt('Please provide a prompt');
+            return;
+        }
+        if (context.trim() === ''){
+            setContext('Please provide a context');
+             return;
+        }
         setIsTyping(true);
         setLoadingMessage('Crafting your message...');
         try {
@@ -39,7 +47,7 @@ function Write({ clear }) {
                     tone: tone || 'neutral',
                     length: length || 'long',
                     format: 'markdown',
-                    sharedContext: context || '',
+                    sharedContext: context,
                 });
                 const stream = await writer.writeStreaming(prompt);
                 let fullResponse = '';
