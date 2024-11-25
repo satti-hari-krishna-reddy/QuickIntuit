@@ -6,7 +6,8 @@ const AiOptions = ({ onOptionSelect }) => {
     { label: "analyze", onClick: () => onOptionSelect("analyze") },
     { label: "translate", onClick: () => onOptionSelect("translate") },
     { label: "AI Smart Tables", onClick: () => onOptionSelect("ai_table") },
-    { label: "Help Me Write", onClick: () => onOptionSelect("write") }
+    { label: "Write using AI", onClick: () => onOptionSelect("write") },
+    { label: "Rewrite using AI", onClick: () => onOptionSelect("rewrite") }
   ];
 
   const containerStyle = {
