@@ -6,7 +6,7 @@ import Translate from './components/Translate';
 import ChatInterface from './components/ChatInterface';
 import AiSmartTable from './components/AiSmartTable';
 import Write from './components/WriteX';  
-// import AnalyzeComponent from './components/Analyze';  // Example component
+import ReWrite from './components/Rewrite';  
 
 import './index.css';
 
@@ -90,6 +90,9 @@ const handleOptionSelect = (option) => {
       break;
     case 'write':
       root.render(<Write clear={removeFloatingComponentContainer} />);
+      break;
+    case 'rewrite':
+      root.render(<ReWrite text={selectedText} clear={removeFloatingComponentContainer} />);
       break;
     default:
       root.unmount();
