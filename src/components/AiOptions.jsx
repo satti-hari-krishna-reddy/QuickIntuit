@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 const AiOptions = ({ onOptionSelect }) => {
   const aiOptionsList = [
     { label: "summarize", onClick: () => onOptionSelect("summarize") },
+    { label: "Write Better", onClick: () => onOptionSelect("write_better") },
     { label: "analyze", onClick: () => onOptionSelect("analyze") },
     { label: "translate", onClick: () => onOptionSelect("translate") },
     { label: "AI Smart Tables", onClick: () => onOptionSelect("ai_table") },
@@ -18,7 +19,6 @@ const AiOptions = ({ onOptionSelect }) => {
     position: 'absolute',
     zIndex: 1000,
   };
-
   const optionStyle = {
     color: 'white',
     margin: '5px 0',
