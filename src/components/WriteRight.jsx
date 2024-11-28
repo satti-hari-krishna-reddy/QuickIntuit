@@ -12,15 +12,13 @@ function injectTailwindStyles() {
 
 const supportedModes = {
     "Grammar & Spelling ✏️": "Correct the grammar and spelling errors in the following text. Provide corrections only, no commentary, and show examples: \n",
-    "Make Clear 💡": "Simplify the following sentence to make it clearer, more concise, and easier to understand, without commentary. For example: 'The manager was responsible for the planning and execution of the project in such a way that ensured all goals were met in a timely manner.' → 'The manager planned and executed the project to meet all goals on time.' Now simplify this: \n",
     "Rephrase It 🔄": "Rephrase the following sentence to make it shorter, clearer, and more impactful. Focus on removing unnecessary words or simplifying complex structures while retaining the meaning. Provide examples: \n",
     "Keep Consistent 🔗": "Ensure consistency in spelling, capitalization, and style throughout the text. Focus on making all terms and phrases uniform (e.g., spelling variations, punctuation, capitalization). Provide examples: \n",
     "Word Boost 🚀": "Suggest stronger or more precise words to improve the clarity and impact of the following sentence. Aim to replace repetitive or vague words with more varied and specific vocabulary. Provide examples: \n",
     "Mood Enhancer 💬": "Adjust the tone of the following text based on the context. If the text is too formal, suggest making it friendlier or more conversational. If it’s too informal, suggest making it more formal. Provide examples: \n",
-    "Fix Punctuation 🛠️": "Correct the punctuation in the following text to ensure clarity and readability. Look for missing commas, periods, and other punctuation issues. Provide examples: \n",
 };
 
-const WriteRight = ({ initialText, clear }) => {
+const WriteRight = ({ initialText, clear, replaceText }) => {
     const [loadingMessage, setLoadingMessage] = useState('Improving your text...');
     const [selectedMode, setSelectedMode] = useState('');
     const [selectedTone, setSelectedTone] = useState(''); // For Mood Enhancer tone
@@ -91,12 +89,11 @@ const WriteRight = ({ initialText, clear }) => {
                 <Loader message={loadingMessage} />
             ) : (
                 <>
-                    {enhancedText && (
                         <div className="flex justify-between items-center mb-4">
                             <div className="header-text flex items-center mb-2">
-                                <div className="text-sm text-gray-700 mr-2">
+                            {enhancedText && (  <div className="text-sm text-gray-700 mr-2">
                                     Here’s an improved version
-                                </div>
+                                </div>          )}
                                 <span className="text-xs text-white bg-blue-500 rounded-full px-2 py-1">
                                     AI Generated
                                 </span>
@@ -112,23 +109,33 @@ const WriteRight = ({ initialText, clear }) => {
                                 X
                             </button>
                         </div>
-                    )}
-
+     
                     {enhancedText ? (
                         <div>
                             <div
                                 className="text-md font-normal text-gray-800 bg-white p-4 rounded-md shadow-md break-words whitespace-normal w-full"
                                 dangerouslySetInnerHTML={{ __html: parseMarkdown(enhancedText) }}
                             />
-                            <button
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 mt-4 rounded-md w-full transition duration-200"
-                                onClick={() => {
-                                    setEnhancedText(null);
-                                    clearSession();
-                                }}
-                            >
-                                Back
-                            </button>
+                            <div className="flex gap-4 mt-4">
+                                <button
+                                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md w-full transition duration-200"
+                                    onClick={() => {
+                                        setEnhancedText(null);
+                                        clearSession();
+                                    }}
+                                >
+                                    Back
+                                </button>
+                                <button
+                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md w-full transition duration-200"
+                                    onClick={() => {
+                                        replaceText(enhancedText);
+                                        clearSession();
+                                    }}
+                                >
+                                    Replace
+                                </button>
+                            </div>
                         </div>
                     ) : (
                         <div className="content-box p-4 bg-white rounded-md shadow-md mb-4">
@@ -183,6 +190,7 @@ const WriteRight = ({ initialText, clear }) => {
 WriteRight.propTypes = {
     initialText: PropTypes.string.isRequired,
     clear: PropTypes.func.isRequired,
+    replaceText: PropTypes.func.isRequired,
 };
 
 export default WriteRight;
