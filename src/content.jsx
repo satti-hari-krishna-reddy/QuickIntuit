@@ -18,6 +18,10 @@ let bottomRightX = null;
 let bottomRightY = null;
 let selectedText = "";
 
+let copiedText = '';
+let selectedRange = null; 
+let activeElement = null; 
+
 const insertAiIcon = (mouseX, mouseY) => {
   if (!aiIconContainer) {
     aiIconContainer = document.createElement('div');
@@ -26,15 +30,37 @@ const insertAiIcon = (mouseX, mouseY) => {
     aiIconContainer.style.pointerEvents = 'auto';
     aiIconContainer.style.zIndex = '1000';
     aiIconContainer.style.display = 'block';
+
     document.body.appendChild(aiIconContainer);
 
     const root = ReactDOM.createRoot(aiIconContainer);
     root.render(<AiOverlayIcon onClick={addIconOptions} />);
   }
 
-  aiIconContainer.style.left = `${mouseX}px`;
-  aiIconContainer.style.top = `${mouseY}px`;
-}
+  if (document.body.contains(aiIconContainer)) {
+    aiIconContainer.style.left = `${mouseX}px`;
+    aiIconContainer.style.top = `${mouseY}px`;
+
+
+    if (!aiIconContainer.hasListener) {
+      aiIconContainer.addEventListener('mousedown', (event) => {
+        event.preventDefault(); // Prevent default browser behavior
+        event.stopPropagation(); // Stop Gmail's scripts from hijacking
+      });
+
+      aiIconContainer.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevent Gmail's scripts from hijacking the click
+        event.preventDefault(); 
+      });
+
+      aiIconContainer.hasListener = true; // Custom property to track listener
+    }
+  } else {
+    console.warn("aiIconContainer was removed. Re-injecting.");
+    aiIconContainer = null; // Reset and try again
+    insertAiIcon(mouseX, mouseY);
+  }
+};
 
 const addIconOptions = () => {
   if (!aiOptionsContainer) {
@@ -77,7 +103,6 @@ const handleOptionSelect = (option) => {
   // Conditionally render component based on option
   switch (option) {
     case 'summarize':
-      console.log('Summarizing text:', selectedText);
       root.render(<TextAdjustComponent text={selectedText} clear={removeFloatingComponentContainer} />);
       break;
     case 'translate':
@@ -93,10 +118,10 @@ const handleOptionSelect = (option) => {
       root.render(<Write clear={removeFloatingComponentContainer} />);
       break;
     case 'rewrite':
-      root.render(<ReWrite text={selectedText} clear={removeFloatingComponentContainer} />);
+      root.render(<ReWrite text={selectedText} clear={removeFloatingComponentContainer} replaceText={replaceSelectedText} />);
       break;
     case 'write_better':
-      root.render(<WriteRight initialText={selectedText} clear={removeFloatingComponentContainer} />);
+      root.render(<WriteRight initialText={selectedText} clear={removeFloatingComponentContainer} replaceText={replaceSelectedText} />);
       break;
     default:
       root.unmount();
@@ -113,6 +138,7 @@ const handleSelectionChange = () => {
     }
     if (aiOptionsContainer) {
       setTimeout(() => {
+        console.log('Removing options container');
         aiOptionsContainer.remove();
         aiOptionsContainer = null;
       }, 150);
@@ -121,6 +147,10 @@ const handleSelectionChange = () => {
     selectedText = selection.toString().trim();
     const range = selection.getRangeAt(0);
     const clientRects = range.getClientRects();
+
+    copiedText = selection.toString().trim();
+    selectedRange = selection.getRangeAt(0); 
+    activeElement = document.activeElement; 
 
     if (clientRects.length > 0) {
       const lastRect = clientRects[clientRects.length - 1];
@@ -134,16 +164,34 @@ const handleSelectionChange = () => {
 document.addEventListener('selectionchange', handleSelectionChange);
 
 
+const replaceSelectedText = (newText) => {
+  if (!selectedRange || !copiedText) return; 
 
-// // Event listener for mouseup
-// document.addEventListener('mouseup', (event) => {
-//   lastMouseX = event.clientX + window.scrollX;
-//   lastMouseY = event.clientY + window.scrollY;
+  if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
+    const start = activeElement.selectionStart;
+    const end = activeElement.selectionEnd;
+    activeElement.value = activeElement.value.slice(0, start) + newText + activeElement.value.slice(end);
+    activeElement.selectionStart = activeElement.selectionEnd = start + newText.length;
 
-//   if (window.getSelection().toString().trim()) {
-//     console.log("Selection confirmed on mouseup.");
-//     addFloatingButton(lastMouseX, lastMouseY, "mouseup");
-//   } else {
-//     console.log("Mouseup detected without valid selection.");
-//   }
-// });
+  } else {
+
+    try {
+      const range = selectedRange;
+      const newTextNode = document.createTextNode(newText); 
+
+     
+      range.deleteContents();
+      range.insertNode(newTextNode);
+
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      const newRange = document.createRange();
+      newRange.setStart(newTextNode, 0);
+      newRange.setEnd(newTextNode, newText.length);
+      selection.addRange(newRange);
+
+    } catch (error) {
+      console.error('Error replacing text in regular element:', error);
+    }
+  }
+};
