@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Loader from './Loader';
 import PropTypes from 'prop-types';
 import { marked } from 'marked';
+import Draggable from 'react-draggable';
 
 function injectTailwindStyles() {
     const tailwindLink = document.createElement('link');
@@ -84,6 +85,7 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
     };
 
     return (
+        <Draggable>
         <div className="relative container mx-auto p-4 max-w-xl rounded-lg shadow-lg bg-gray-50" style={{ backdropFilter: 'blur(18px)' }}>
             {loading ? (
                 <Loader message={loadingMessage} />
@@ -113,10 +115,18 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
                     {enhancedText ? (
                         <div>
                             <div
-                                className="text-md font-normal text-gray-800 bg-white p-4 rounded-md shadow-md break-words whitespace-normal w-full"
+                                className="text-md font-normal text-gray-800 bg-white p-4 rounded-md shadow-md break-words whitespace-normal w-full overflow-y-auto max-h-96"
                                 dangerouslySetInnerHTML={{ __html: parseMarkdown(enhancedText) }}
                             />
                             <div className="flex gap-4 mt-4">
+                            <button
+                                    className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-md w-full transition duration-200"
+                                    onClick={() => {
+                                        replaceText(enhancedText);
+                                    }}
+                                >
+                                    Replace
+                                </button>
                                 <button
                                     className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md w-full transition duration-200"
                                     onClick={() => {
@@ -125,15 +135,6 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
                                     }}
                                 >
                                     Back
-                                </button>
-                                <button
-                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md w-full transition duration-200"
-                                    onClick={() => {
-                                        replaceText(enhancedText);
-                                        clearSession();
-                                    }}
-                                >
-                                    Replace
                                 </button>
                             </div>
                         </div>
@@ -184,6 +185,7 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
                 </>
             )}
         </div>
+        </Draggable>
     );
 };
 
