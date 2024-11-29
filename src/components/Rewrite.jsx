@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { marked } from 'marked';
 import PropTypes from 'prop-types';
 import Loader from './Loader';
+import Draggable from 'react-draggable';
 
 console.log('TextAdjustComponent loaded');
 
@@ -13,7 +14,7 @@ function injectTailwindStyles() {
 }
 
 
-function ReWrite({ text, clear }) {
+function ReWrite({ text, clear, replaceText }) {
     const [isAdjustOpen, setAdjustOpen] = useState(false);
     const [tone, setTone] = useState('');
     const [rewrited, setRewrited] = useState('');
@@ -77,6 +78,7 @@ function ReWrite({ text, clear }) {
     const parseMarkdown = (markdown) => marked(markdown);
 
     return (
+        <Draggable>
        <div className="relative container mx-auto p-4 max-w-md rounded-lg shadow-lg z-[1000] bg-gray-50"
         style={{
             backdropFilter: 'blur(18px)', 
@@ -103,15 +105,19 @@ function ReWrite({ text, clear }) {
                         </div>
                     </div>
                     <div className="content-box p-4 bg-white rounded-md shadow-md">
+                    <div className="content-box p-4 rounded-md shadow-md overflow-y-auto max-h-96">
                         <div
                             className="text-md font-normal text-gray-700 break-words whitespace-normal w-full"
                             dangerouslySetInnerHTML={{ __html: parseMarkdown(rewrited) }}
                         />
+                        </div>
                         {!isAdjustOpen ? (
                             <div className="button-bar flex justify-between items-center border-t pt-2 mt-2">
                                 <button
                                     className="adjust-btn flex items-center text-gray-600 text-sm"
-                                    onClick={console.log('Rewrite')}
+                                    onClick={() => {
+                                        replaceText(rewrited);
+                                    }}
                                 >
                                     <span className="icon-adjust mr-1">🔄</span>
                                     Replace
@@ -163,6 +169,7 @@ function ReWrite({ text, clear }) {
                 </>
             )}
         </div>
+        </Draggable>
     );
 }
 
@@ -171,6 +178,9 @@ ReWrite.propTypes = {
 };
 ReWrite.propTypes = {
     clear: PropTypes.func.isRequired,
+};
+ReWrite.propTypes = {
+    replaceText: PropTypes.func.isRequired,
 };
 
 export default ReWrite;
