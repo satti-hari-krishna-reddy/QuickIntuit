@@ -3,6 +3,7 @@ import Loader from './Loader';
 import { detectLanguage } from '../detect-language';
 import { translateText } from '../translate';
 import PropTypes from 'prop-types';
+import Dragable from 'react-draggable';
 
 function injectTailwindStyles() {
     const tailwindLink = document.createElement('link');
@@ -145,11 +146,11 @@ const getLanguageName = (code) => languageMap[code] || "Unknown language";
 
 const Translate = ({ initialText, clear }) => {
     const [text, setText] = useState(initialText);
-    const [originalText] = useState(initialText); // Keep the original text stored
+    const [originalText] = useState(initialText); 
     const [loadingMessage, setLoadingMessage] = useState('Detecting the language...');
     const [srcLang, setSrcLang] = useState('');
     const [tgtLang, setTgtLang] = useState('');
-    const [loading, setLoading] = useState(true); // Initially loading for language detection
+    const [loading, setLoading] = useState(true); 
 
     useEffect(() => {
         injectTailwindStyles();
@@ -189,6 +190,7 @@ const Translate = ({ initialText, clear }) => {
     };
 
     return (
+        <Dragable>
         <div className="relative container mx-auto p-4 max-w-md rounded-lg shadow-lg z-[1000] bg-gray-50"
             style={{ backdropFilter: 'blur(18px)' }}>
             
@@ -210,7 +212,7 @@ const Translate = ({ initialText, clear }) => {
                         <div className="mb-2 text-sm font-semibold text-gray-700">
                             {srcLang && <span>Detected Language: {getLanguageName(srcLang)}</span>}
                         </div>
-                        <div className="text-md font-normal text-gray-700 whitespace-pre-wrap w-full mb-4">
+                        <div className="text-md font-normal text-gray-700 whitespace-pre-wrap w-full mb-4 overflow-y-auto max-h-96">
                             {text}
                         </div>
 
@@ -241,6 +243,7 @@ const Translate = ({ initialText, clear }) => {
                 </>
             )}
         </div>
+        </Dragable>
     );
 };
 
