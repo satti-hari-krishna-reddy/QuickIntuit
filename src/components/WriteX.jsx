@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { marked } from 'marked';
 import PropTypes from 'prop-types';
 import Loader from './Loader';
+import Draggable from 'react-draggable';
 
 function injectTailwindStyles() {
     const tailwindLink = document.createElement('link');
@@ -18,7 +19,7 @@ function Write({ clear }) {
     const [context, setContext] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState('');
-    const [showCopied, setShowCopied] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
 
     let writer = undefined;
     const clearWriter = () => {
@@ -67,9 +68,14 @@ function Write({ clear }) {
     };
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(aiText);
-        setShowCopied(true);
-        setTimeout(() => setShowCopied(false), 2000);
+        navigator.clipboard.writeText(aiText)
+        .then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000); // Revert back after 2 seconds
+        })
+        .catch((error) => {
+            console.error('Copy failed:', error);
+        });
     };
 
     useEffect(() => {
@@ -79,6 +85,7 @@ function Write({ clear }) {
     const parseMarkdown = (markdown) => marked(markdown);
 
     return (
+        <Draggable>
         <div
             className="relative container mx-auto p-4 max-w-lg rounded-lg shadow-lg z-[1000] bg-gray-50"
             style={{
@@ -96,14 +103,6 @@ function Write({ clear }) {
                             </span>
                         </div>
                         <div className="flex space-x-3 items-center">
-                            {aiText && (
-                                <div
-                                    className="text-green-500 hover:text-blue-500 cursor-pointer"
-                                    onClick={copyToClipboard}
-                                >
-                                    Copy
-                                </div>
-                            )}
                             <div
                                 className="cursor-pointer text-gray-500 font-semibold hover:text-red-500 transition duration-150"
                                 onClick={() => {
@@ -115,11 +114,6 @@ function Write({ clear }) {
                             </div>
                         </div>
                     </div>
-                    {showCopied && (
-                        <div className="absolute top-4 right-4 bg-green-500 text-white text-sm px-3 py-1 rounded">
-                            Copied!
-                        </div>
-                    )}
                     {!aiText ? (
                         <>
                             <div className="content-box p-4 bg-white rounded-md shadow-md space-y-4">
@@ -170,25 +164,37 @@ function Write({ clear }) {
                             </div>
                         </>
                     ) : (
-                        <>
+                        <>  <div className="content-box p-4 rounded-md shadow-md overflow-y-auto max-h-96">
                             <div
                                 className="text-md font-normal text-gray-800 leading-relaxed whitespace-pre-wrap break-words border border-gray-200 rounded-lg p-4 bg-white"
                                 dangerouslySetInnerHTML={{ __html: parseMarkdown(aiText) }}
                             />
-                            <button
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 mt-4 rounded-md w-full transition duration-200"
-                                onClick={() => {
-                                    setAiText('');
-                                    setIsTyping(false);
-                                }}
-                            >
-                                Back
-                            </button>
+                        </div>
+                        <button
+                            className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 mt-4 rounded-lg shadow-md hover:shadow-lg w-full transition-all duration-300 transform hover:scale-105"
+                            onClick={() => {
+                                setAiText('');
+                                setIsTyping(false);
+                            }}
+                        >
+                            Back
+                        </button>
+                        <button
+                            className={`${
+                                isCopied
+                                    ? "bg-green-400 hover:bg-green-500"
+                                    : "bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600"
+                            } text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
+                            onClick={copyToClipboard}
+                        >
+                            {isCopied ? "Copied!" : "Copy"}
+                        </button>
                         </>
                     )}
                 </>
             )}
         </div>
+        </Draggable>
     );
 }
 
