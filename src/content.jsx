@@ -71,7 +71,7 @@ const addIconOptions = () => {
     aiOptionsContainer.style.zIndex = '1000';
     aiOptionsContainer.style.display = 'block';
     aiOptionsContainer.style.left = `${bottomRightX}px`;
-    aiOptionsContainer.style.top = `${bottomRightY}px`;
+    aiOptionsContainer.style.top = `${bottomRightY - 50}px`;
     document.body.appendChild(aiOptionsContainer);
 
     const root = ReactDOM.createRoot(aiOptionsContainer);
@@ -95,8 +95,8 @@ const handleOptionSelect = (option) => {
     document.body.appendChild(floatingComponentContainer);
   }
 
-  floatingComponentContainer.style.left = `${bottomRightX}px`;
-  floatingComponentContainer.style.top = `${bottomRightY + 40}px`;
+  floatingComponentContainer.style.left = `${bottomRightX - 40 }px`;
+  floatingComponentContainer.style.top = `${bottomRightY - 80}px`;
 
   const root = ReactDOM.createRoot(floatingComponentContainer);
 
@@ -108,8 +108,8 @@ const handleOptionSelect = (option) => {
     case 'translate':
       root.render(<Translate initialText={selectedText} clear={removeFloatingComponentContainer} />);
       break;
-    case 'analyze':
-      root.render(<ChatInterface />);
+    case 'ask_ai':
+      root.render(<ChatInterface text={selectedText} clear={removeFloatingComponentContainer}/>);
       break;
     case 'ai_table':
       root.render(<AiSmartTable initialText={selectedText} clear={removeFloatingComponentContainer} />);
