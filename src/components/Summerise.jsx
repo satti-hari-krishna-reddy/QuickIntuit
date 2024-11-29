@@ -3,8 +3,8 @@ import { marked } from 'marked';
 import PropTypes from 'prop-types';
 import { getSummary } from '../summerize';
 import Loader from './Loader';
+import Draggable from 'react-draggable';
 
-console.log('TextAdjustComponent loaded');
 
 function injectTailwindStyles() {
     const tailwindLink = document.createElement('link');
@@ -19,7 +19,8 @@ function TextAdjustComponent({ text, clear }) {
     const [type, setType] = useState('Select Type');
     const [length, setLength] = useState('Select Length');
     const [summary, setSummary] = useState('');
-    const [loadingMessage, setLoadingMessage] = useState('   Generating summary...   ');
+    const [loadingMessage, setLoadingMessage] = useState('Generating summary...');
+    const [isCopied, setIsCopied] = useState(false);
     
     const handleAdjustClick = () => setAdjustOpen(true);
 
@@ -50,6 +51,19 @@ function TextAdjustComponent({ text, clear }) {
         fetchSummary();
     };
 
+    
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(summary)
+        .then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000); // Revert back after 2 seconds
+        })
+        .catch((error) => {
+            console.error('Copy failed:', error);
+        });
+    };
+
+
     useEffect(() => {
         injectTailwindStyles();
     }, []);
@@ -61,14 +75,18 @@ function TextAdjustComponent({ text, clear }) {
     const parseMarkdown = (markdown) => marked(markdown);
 
     return (
-       <div className="relative container mx-auto p-4 max-w-md rounded-lg shadow-lg z-[1000] bg-gray-50"
+        <Draggable>
+       <div className="draggable relative container mx-auto p-4 max-w-md rounded-lg shadow-lg z-[1000] bg-gray-50"
         style={{
             backdropFilter: 'blur(18px)', 
         }}>
             {!summary ? (
                 <Loader message={loadingMessage} />
             ) : (
-                <> <div className="flex justify-between">
+                <> 
+          
+                <div className="flex justify-between">
+            
                     <div className="header-text flex items-center mb-2">
                         <div className="text-sm text-gray-500 mr-2">
                             Here’s a summary of the content
@@ -83,21 +101,38 @@ function TextAdjustComponent({ text, clear }) {
                             X
                         </div>
                     </div>
+             
                     <div className="content-box p-4 bg-white rounded-md shadow-md">
+                    <div className="content-box p-4 rounded-md shadow-md overflow-y-auto max-h-96">
                         <div
                             className="text-md font-normal text-gray-700 break-words whitespace-normal w-full"
                             dangerouslySetInnerHTML={{ __html: parseMarkdown(summary) }}
                         />
+                      </div>
+
+
                         {!isAdjustOpen ? (
                             <div className="button-bar flex justify-between items-center border-t pt-2 mt-2">
-                                <button
-                                    className="adjust-btn flex items-center text-gray-600 text-sm"
-                                    onClick={handleAdjustClick}
-                                >
-                                    <span className="icon-adjust mr-1">⚙</span>
-                                    Adjust
-                                </button>
-                            </div>
+                                    <button
+                                        className="adjust-btn flex items-center text-gray-600 text-sm hover:text-gray-800 transition-all duration-300 transform hover:scale-105"
+                                        onClick={handleAdjustClick}
+                                    >
+                                        <span className="icon-adjust mr-1">⚙</span>
+                                        Adjust
+                                    </button>
+                                    <button
+                                        className={`${
+                                            isCopied
+                                                ? "bg-green-400 hover:bg-green-500"
+                                                : "bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600"
+                                        } text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
+                                        onClick={copyToClipboard}
+                                    >
+                                        {isCopied ? "Copied!" : "Copy"}
+                                    </button>
+
+                                </div>
+
                         ) : (
                             <div className="adjust-options flex space-x-4 border-t pt-2 mt-2">
                                 <button
@@ -139,6 +174,7 @@ function TextAdjustComponent({ text, clear }) {
                 </>
             )}
         </div>
+        </Draggable>
     );
 }
 
