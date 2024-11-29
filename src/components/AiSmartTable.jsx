@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Loader from './Loader';
 import PropTypes from 'prop-types';
+import Draggable from 'react-draggable';
 
 function injectTailwindStyles() {
     const tailwindLink = document.createElement('link');
@@ -153,6 +154,7 @@ const AiSmartTable = ({ initialText, clear }) => {
     
 
     return (
+        <Draggable>
         <div
             className="relative container mx-auto p-4 max-w-xl rounded-lg shadow-lg bg-gray-50"
             style={{ backdropFilter: 'blur(18px)' }}
@@ -179,7 +181,9 @@ const AiSmartTable = ({ initialText, clear }) => {
 
                     {parsedTable ? (
                         <div>
-                            {renderTable()}
+                            <div className="max-h-96 overflow-y-auto">
+                                {renderTable()}
+                            </div>
                             <button
                                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 mt-4 rounded-md w-full transition duration-200"
                                 onClick={() => {
@@ -220,6 +224,7 @@ const AiSmartTable = ({ initialText, clear }) => {
                 </>
             )}
         </div>
+        </Draggable>
     );
 };
 
