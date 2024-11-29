@@ -1,4 +1,33 @@
+@import "@fontsource/orbitron";
+@import "@fontsource/orbitron/700.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Custom scrollbar styles */
+.content-box::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.content-box::-webkit-scrollbar-thumb {
+    background-color: #4A90E2; /* Scrollbar thumb color */
+    border-radius: 4px; /* Rounded corners */
+}
+
+.content-box::-webkit-scrollbar-thumb:hover {
+    background-color: #357ABD; /* Hover color for thumb */
+}
+
+.content-box::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Scrollbar track color */
+    border-radius: 4px; /* Rounded corners for the track */
+}
+.draggable {
+    will-change: transform;
+    backface-visibility: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
 
