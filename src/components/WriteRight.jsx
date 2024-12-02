@@ -1,15 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Loader from './Loader';
 import PropTypes from 'prop-types';
 import { marked } from 'marked';
 import Draggable from 'react-draggable';
 
-function injectTailwindStyles() {
-    const tailwindLink = document.createElement('link');
-    tailwindLink.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
-    tailwindLink.rel = 'stylesheet';
-    document.head.appendChild(tailwindLink);
-}
 
 const supportedModes = {
     "Grammar & Spelling ✏️": "Correct the grammar and spelling errors in the following text. Provide corrections only, no commentary, and show examples: \n",
@@ -22,14 +16,10 @@ const supportedModes = {
 const WriteRight = ({ initialText, clear, replaceText }) => {
     const [loadingMessage, setLoadingMessage] = useState('Improving your text...');
     const [selectedMode, setSelectedMode] = useState('');
-    const [selectedTone, setSelectedTone] = useState(''); // For Mood Enhancer tone
+    const [selectedTone, setSelectedTone] = useState(''); 
     const [loading, setLoading] = useState(false);
     const [enhancedText, setEnhancedText] = useState('');
     let session = undefined;
-
-    useEffect(() => {
-        injectTailwindStyles();
-    }, []);
 
     const parseMarkdown = (markdown) => marked(markdown);
 
@@ -86,7 +76,7 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
 
     return (
         <Draggable>
-        <div className="relative container mx-auto p-4 max-w-xl rounded-lg shadow-lg bg-gray-50" style={{ backdropFilter: 'blur(18px)' }}>
+        <div className="draggable relative container mx-auto p-4 max-w-xl rounded-lg shadow-lg bg-gray-50" style={{ backdropFilter: 'blur(18px)' }}>
             {loading ? (
                 <Loader message={loadingMessage} />
             ) : (
