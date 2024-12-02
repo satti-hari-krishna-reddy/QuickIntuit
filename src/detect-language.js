@@ -1,8 +1,10 @@
 const initDetector = async () => {
+    // eslint-disable-next-line no-undef
     const canDetect = await translation.canDetect();
     let detector;
     if (canDetect !== 'no') {
         if (canDetect === 'readily') {
+            // eslint-disable-next-line no-undef
             detector = await translation.createDetector();
             return { detector, status: 'Ready' };
         } else {
