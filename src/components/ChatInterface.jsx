@@ -3,12 +3,6 @@ import PropTypes from 'prop-types';
 import { marked } from 'marked';
 import Draggable from 'react-draggable';
 
-function injectTailwindStyles() {
-    const tailwindLink = document.createElement('link');
-    tailwindLink.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
-    tailwindLink.rel = 'stylesheet';
-    document.head.appendChild(tailwindLink);
-}
 
 function ChatInterface({ text, clear }) {
     const [input, setInput] = useState(" I have some text. Please explain it clearly so I can understand what it is about. here is the text: " + "\n" + text);
@@ -18,9 +12,6 @@ function ChatInterface({ text, clear }) {
 
     let session = undefined;
 
-    useEffect(() => {
-        injectTailwindStyles();
-    }, []); // Only run once when the component mounts
 
     useEffect(() => {
         handleSend();
@@ -68,7 +59,6 @@ function ChatInterface({ text, clear }) {
         if (e.key === 'Enter') handleSend();
     };
 
-    // Function to calculate the width based on the longest message
     const getWidthForMessages = () => {
         const longestMessage = messages.reduce((max, msg) => {
             return msg.text.length > max.length ? msg.text : max;
@@ -79,7 +69,7 @@ function ChatInterface({ text, clear }) {
     return (
         <Draggable>
             <div 
-                className={`flex flex-col items-center rounded-lg p-6 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 shadow-xl ${getWidthForMessages()} h-5/6`} 
+                className={`draggable flex flex-col items-center rounded-lg p-6 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 shadow-xl ${getWidthForMessages()} h-5/6`} 
                 style={{ maxHeight: '85vh', backdropFilter: 'blur(20px)' }}
             >
                 <div className="flex justify-between w-full">
