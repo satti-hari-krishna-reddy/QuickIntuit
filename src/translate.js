@@ -1,10 +1,11 @@
 const initTranslator = async (srcLang, tgtLang ) => {
     const languagePair = { sourceLanguage: srcLang, targetLanguage: tgtLang };
+    // eslint-disable-next-line no-undef
     const canTranslate = await translation.canTranslate(languagePair);
     let translator;
     if (canTranslate !== 'no') {
       if (canTranslate === 'readily') {
-
+        // eslint-disable-next-line no-undef
         translator = await translation.createTranslator(languagePair);
         return { translator, status: 'Ready' };
 
