@@ -1,15 +1,8 @@
-import { useState, useEffect } from 'react';
+import '../index.css';
+import { useState } from 'react';
 import Loader from './Loader';
 import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
-
-function injectTailwindStyles() {
-    const tailwindLink = document.createElement('link');
-    tailwindLink.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
-    tailwindLink.rel = 'stylesheet';
-    document.head.appendChild(tailwindLink);
-}
-
 
 const supportedModes = {
     "⭐ Pros and Cons Table": "summerise this textual data into a table of pros and cons",
@@ -34,11 +27,6 @@ const AiSmartTable = ({ initialText, clear }) => {
 
     let session = undefined
 
-    useEffect(() => {
-        injectTailwindStyles();
-    }, []);
-
-    // Fixed Markdown Table Parsing
     const parseMarkdownTable = (markdown) => {
         const rows = markdown.split('\n').filter((row) => row.includes('|'));
         if (rows.length < 2) return null; // Invalid table (needs header + at least one row)
@@ -156,7 +144,7 @@ const AiSmartTable = ({ initialText, clear }) => {
     return (
         <Draggable>
         <div
-            className="relative container mx-auto p-4 max-w-xl rounded-lg shadow-lg bg-gray-50"
+            className="draggable relative container mx-auto p-4 max-w-xl rounded-lg shadow-lg bg-gray-50"
             style={{ backdropFilter: 'blur(18px)' }}
         >
             {loading ? (
