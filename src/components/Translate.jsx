@@ -1,16 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Loader from './Loader';
-import { detectLanguage } from '../detect-language';
 import { translateText } from '../translate';
 import PropTypes from 'prop-types';
 import Dragable from 'react-draggable';
 
-function injectTailwindStyles() {
-    const tailwindLink = document.createElement('link');
-    tailwindLink.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
-    tailwindLink.rel = 'stylesheet';
-    document.head.appendChild(tailwindLink);
-}
 
 // Supported language pairs
 const supportedPairs = {
@@ -148,27 +141,22 @@ const Translate = ({ initialText, clear }) => {
     const [text, setText] = useState(initialText);
     const [originalText] = useState(initialText); 
     const [loadingMessage, setLoadingMessage] = useState('Detecting the language...');
-    const [srcLang, setSrcLang] = useState('');
+    const [srcLang, ] = useState('');
     const [tgtLang, setTgtLang] = useState('');
     const [loading, setLoading] = useState(true); 
 
-    useEffect(() => {
-        injectTailwindStyles();
-        detectInitialLanguage();
-    }, []);
-
     // Detect the initial language of the input text
-    const detectInitialLanguage = async () => {
-        try {
-            const result = await detectLanguage(text);
-            setLoading(false);
-            setSrcLang(result);
-        } catch (error) {
-            console.error("Error detecting language:", error);
-            setLoadingMessage("Error detecting language. Try again later.");
-            setTimeout(() => {clear();}, 3000);
-        }
-    };
+    // const detectInitialLanguage = async () => {
+    //     try {
+    //         const result = await detectLanguage(text);
+    //         setLoading(false);
+    //         setSrcLang(result);
+    //     } catch (error) {
+    //         console.error("Error detecting language:", error);
+    //         setLoadingMessage("Error detecting language. Try again later.");
+    //         setTimeout(() => {clear();}, 3000);
+    //     }
+    // };
 
     // Handle text translation
     const handleTranslate = async () => {
