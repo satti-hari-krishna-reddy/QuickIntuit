@@ -4,16 +4,6 @@ import PropTypes from 'prop-types';
 import Loader from './Loader';
 import Draggable from 'react-draggable';
 
-console.log('TextAdjustComponent loaded');
-
-function injectTailwindStyles() {
-    const tailwindLink = document.createElement('link');
-    tailwindLink.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
-    tailwindLink.rel = 'stylesheet';
-    document.head.appendChild(tailwindLink);
-}
-
-
 function ReWrite({ text, clear, replaceText }) {
     const [isAdjustOpen, setAdjustOpen] = useState(false);
     const [tone, setTone] = useState('');
@@ -68,10 +58,6 @@ function ReWrite({ text, clear, replaceText }) {
     };
 
     useEffect(() => {
-        injectTailwindStyles();
-    }, []);
-
-    useEffect(() => {
         handleReWriteClick();
     }, [text]);
 
@@ -79,7 +65,7 @@ function ReWrite({ text, clear, replaceText }) {
 
     return (
         <Draggable>
-       <div className="relative container mx-auto p-4 max-w-md rounded-lg shadow-lg z-[1000] bg-gray-50"
+       <div className="draggable relative container mx-auto p-4 max-w-md rounded-lg shadow-lg z-[1000] bg-gray-50"
         style={{
             backdropFilter: 'blur(18px)', 
         }}>
