@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import { MdOutlineSummarize } from "react-icons/md"; // Summarize
-import { AiOutlineRobot } from "react-icons/ai"; // Ask AI
+import { MdOutlineSummarize } from "react-icons/md"; 
+import { AiOutlineRobot } from "react-icons/ai"; 
 import { RiBrushLine } from "react-icons/ri";
 import { RiEdit2Line } from "react-icons/ri";
-import { MdTranslate } from "react-icons/md"; // Translate
-import { FaTable } from "react-icons/fa"; // AI Smart Tables
-import { BsPencilSquare } from "react-icons/bs"; // Write using AI
-import "@fontsource/orbitron"; // Orbitron font for a futuristic look
+import { MdTranslate } from "react-icons/md"; 
+import { FaTable } from "react-icons/fa"; 
+import { BsPencilSquare } from "react-icons/bs"; 
+import "@fontsource/orbitron";
 
 
 const AiOptions = ({ onOptionSelect }) => {
