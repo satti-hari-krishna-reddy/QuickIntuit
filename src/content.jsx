@@ -9,8 +9,6 @@ import Write from './components/WriteX';
 import ReWrite from './components/Rewrite';
 import WriteRight from './components/WriteRight';
 
-import './index.css';
-
 let aiIconContainer = null;
 let aiOptionsContainer = null;
 let floatingComponentContainer = null;
@@ -32,6 +30,7 @@ const insertAiIcon = (mouseX, mouseY) => {
     aiIconContainer.style.display = 'block';
 
     document.body.appendChild(aiIconContainer);
+
 
     const root = ReactDOM.createRoot(aiIconContainer);
     root.render(<AiOverlayIcon onClick={addIconOptions} />);
@@ -74,7 +73,9 @@ const addIconOptions = () => {
     aiOptionsContainer.style.top = `${bottomRightY - 50}px`;
     document.body.appendChild(aiOptionsContainer);
 
-    const root = ReactDOM.createRoot(aiOptionsContainer);
+    const shadowRoot = aiOptionsContainer.attachShadow({ mode: 'open' });
+
+    const root = ReactDOM.createRoot(shadowRoot);
     root.render(<AiOptions onOptionSelect={handleOptionSelect} />);
   }
 }
