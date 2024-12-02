@@ -6,14 +6,6 @@ import Loader from './Loader';
 import Draggable from 'react-draggable';
 
 
-function injectTailwindStyles() {
-    const tailwindLink = document.createElement('link');
-    tailwindLink.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
-    tailwindLink.rel = 'stylesheet';
-    document.head.appendChild(tailwindLink);
-}
-
-
 function TextAdjustComponent({ text, clear }) {
     const [isAdjustOpen, setAdjustOpen] = useState(false);
     const [type, setType] = useState('Select Type');
@@ -64,9 +56,6 @@ function TextAdjustComponent({ text, clear }) {
     };
 
 
-    useEffect(() => {
-        injectTailwindStyles();
-    }, []);
 
     useEffect(() => {
         fetchSummary();
