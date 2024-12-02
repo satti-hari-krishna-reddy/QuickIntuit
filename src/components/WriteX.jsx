@@ -1,15 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { marked } from 'marked';
 import PropTypes from 'prop-types';
 import Loader from './Loader';
 import Draggable from 'react-draggable';
-
-function injectTailwindStyles() {
-    const tailwindLink = document.createElement('link');
-    tailwindLink.href = 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
-    tailwindLink.rel = 'stylesheet';
-    document.head.appendChild(tailwindLink);
-}
 
 function Write({ clear }) {
     const [aiText, setAiText] = useState('');
@@ -78,16 +71,12 @@ function Write({ clear }) {
         });
     };
 
-    useEffect(() => {
-        injectTailwindStyles();
-    }, []);
-
     const parseMarkdown = (markdown) => marked(markdown);
 
     return (
         <Draggable>
         <div
-            className="relative container mx-auto p-4 max-w-lg rounded-lg shadow-lg z-[1000] bg-gray-50"
+            className="draggable relative container mx-auto p-4 max-w-lg rounded-lg shadow-lg z-[1000] bg-gray-50"
             style={{
                 backdropFilter: 'blur(18px)',
             }}
