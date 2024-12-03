@@ -4,16 +4,20 @@ import { marked } from 'marked';
 import Draggable from 'react-draggable';
 
 function ChatInterface({ text, clear }) {
-  const [input, setInput] = useState(
-    ' I have some text. Please explain it clearly so I can understand what it is about. here is the text: ' +
-      '\n' +
-      text
-  );
+  const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
   let session = undefined;
+  const initalMessage = {
+    role: 'user',
+    text:
+      'I have some text. Please explain it clearly so I can understand what it is about. here is the text: ' +
+      '\n' +
+      text,
+  };
+  let firstTime = true;
 
   useEffect(() => {
     handleSend();
@@ -27,9 +31,13 @@ function ChatInterface({ text, clear }) {
   };
 
   const handleSend = async () => {
-    if (input.trim() === '') return;
+    if (input.trim() === '' && !firstTime) return;
+    let userMessage = { role: 'user', text: input };
 
-    const userMessage = { role: 'user', text: input };
+    if (firstTime) {
+      firstTime = false;
+      userMessage = initalMessage;
+    }
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
 
@@ -37,12 +45,11 @@ function ChatInterface({ text, clear }) {
     try {
       const { available } = await ai.languageModel.capabilities();
       if (available !== 'no') {
-        clearSession();
         session = await ai.languageModel.create({
-          temperature: 0.5,
+          temperature: 1,
           topK: 3,
         });
-        const stream = session.promptStreaming(input);
+        const stream = session.promptStreaming(input || initalMessage.text);
         let fullResponse = '';
         for await (const chunk of stream) {
           fullResponse = chunk;
@@ -81,8 +88,8 @@ function ChatInterface({ text, clear }) {
           <div
             className="cursor-pointer text-gray-500 font-semibold hover:text-red-500 transition duration-150"
             onClick={() => {
-              clear();
               clearSession();
+              clear();
             }}
           >
             X
