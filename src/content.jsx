@@ -5,7 +5,7 @@ import TextAdjustComponent from './components/Summerise';
 import Translate from './components/Translate';
 import ChatInterface from './components/ChatInterface';
 import AiSmartTable from './components/AiSmartTable';
-import Write from './components/WriteX';  
+import Write from './components/WriteX';
 import ReWrite from './components/Rewrite';
 import WriteRight from './components/WriteRight';
 
@@ -14,11 +14,11 @@ let aiOptionsContainer = null;
 let floatingComponentContainer = null;
 let bottomRightX = null;
 let bottomRightY = null;
-let selectedText = "";
+let selectedText = '';
 
 let copiedText = '';
-let selectedRange = null; 
-let activeElement = null; 
+let selectedRange = null;
+let activeElement = null;
 
 const insertAiIcon = (mouseX, mouseY) => {
   if (!aiIconContainer) {
@@ -31,7 +31,6 @@ const insertAiIcon = (mouseX, mouseY) => {
 
     document.body.appendChild(aiIconContainer);
 
-
     const root = ReactDOM.createRoot(aiIconContainer);
     root.render(<AiOverlayIcon onClick={addIconOptions} />);
   }
@@ -39,7 +38,6 @@ const insertAiIcon = (mouseX, mouseY) => {
   if (document.body.contains(aiIconContainer)) {
     aiIconContainer.style.left = `${mouseX}px`;
     aiIconContainer.style.top = `${mouseY}px`;
-
 
     if (!aiIconContainer.hasListener) {
       aiIconContainer.addEventListener('mousedown', (event) => {
@@ -49,13 +47,13 @@ const insertAiIcon = (mouseX, mouseY) => {
 
       aiIconContainer.addEventListener('click', (event) => {
         event.stopPropagation(); // Prevent Gmail's scripts from hijacking the click
-        event.preventDefault(); 
+        event.preventDefault();
       });
 
       aiIconContainer.hasListener = true; // Custom property to track listener
     }
   } else {
-    console.warn("aiIconContainer was removed. Re-injecting.");
+    console.warn('aiIconContainer was removed. Re-injecting.');
     aiIconContainer = null; // Reset and try again
     insertAiIcon(mouseX, mouseY);
   }
@@ -73,18 +71,18 @@ const addIconOptions = () => {
     aiOptionsContainer.style.top = `${bottomRightY - 50}px`;
     document.body.appendChild(aiOptionsContainer);
 
-    const shadowRoot = aiOptionsContainer.attachShadow({ mode: 'open' });
+    const shadowRoot = aiOptionsContainer.attachShadow({ mode: 'closed' });
 
     const root = ReactDOM.createRoot(shadowRoot);
     root.render(<AiOptions onOptionSelect={handleOptionSelect} />);
   }
-}
+};
 const removeFloatingComponentContainer = () => {
   if (floatingComponentContainer) {
     floatingComponentContainer.remove();
     floatingComponentContainer = null;
   }
-}
+};
 
 const handleOptionSelect = (option) => {
   if (!floatingComponentContainer) {
@@ -96,38 +94,81 @@ const handleOptionSelect = (option) => {
     document.body.appendChild(floatingComponentContainer);
   }
 
-  floatingComponentContainer.style.left = `${bottomRightX - 40 }px`;
+  floatingComponentContainer.style.left = `${bottomRightX - 40}px`;
   floatingComponentContainer.style.top = `${bottomRightY - 80}px`;
 
-  const root = ReactDOM.createRoot(floatingComponentContainer);
+  let shadowRoot = floatingComponentContainer.shadowRoot;
+  if (!shadowRoot) {
+    shadowRoot = floatingComponentContainer.attachShadow({ mode: 'closed' });
+  }
+
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  //eslint-disable-next-line no-undef
+  link.href = chrome.runtime.getURL('styles.css');
+  shadowRoot.appendChild(link);
+
+  const root = ReactDOM.createRoot(shadowRoot);
 
   // Conditionally render component based on option
   switch (option) {
     case 'summarize':
-      root.render(<TextAdjustComponent text={selectedText} clear={removeFloatingComponentContainer} />);
+      root.render(
+        <TextAdjustComponent
+          text={selectedText}
+          clear={removeFloatingComponentContainer}
+        />
+      );
       break;
     case 'translate':
-      root.render(<Translate initialText={selectedText} clear={removeFloatingComponentContainer} />);
+      root.render(
+        <Translate
+          initialText={selectedText}
+          clear={removeFloatingComponentContainer}
+        />
+      );
       break;
     case 'ask_ai':
-      root.render(<ChatInterface text={selectedText} clear={removeFloatingComponentContainer}/>);
+      root.render(
+        <ChatInterface
+          text={selectedText}
+          clear={removeFloatingComponentContainer}
+        />
+      );
       break;
     case 'ai_table':
-      root.render(<AiSmartTable initialText={selectedText} clear={removeFloatingComponentContainer} />);
+      root.render(
+        <AiSmartTable
+          initialText={selectedText}
+          clear={removeFloatingComponentContainer}
+        />
+      );
       break;
     case 'write':
       root.render(<Write clear={removeFloatingComponentContainer} />);
       break;
     case 'rewrite':
-      root.render(<ReWrite text={selectedText} clear={removeFloatingComponentContainer} replaceText={replaceSelectedText} />);
+      root.render(
+        <ReWrite
+          text={selectedText}
+          clear={removeFloatingComponentContainer}
+          replaceText={replaceSelectedText}
+        />
+      );
       break;
     case 'write_better':
-      root.render(<WriteRight initialText={selectedText} clear={removeFloatingComponentContainer} replaceText={replaceSelectedText} />);
+      root.render(
+        <WriteRight
+          initialText={selectedText}
+          clear={removeFloatingComponentContainer}
+          replaceText={replaceSelectedText}
+        />
+      );
       break;
     default:
       root.unmount();
   }
-}
+};
 
 const handleSelectionChange = () => {
   const selection = window.getSelection();
@@ -150,37 +191,40 @@ const handleSelectionChange = () => {
     const clientRects = range.getClientRects();
 
     copiedText = selection.toString().trim();
-    selectedRange = selection.getRangeAt(0); 
-    activeElement = document.activeElement; 
+    selectedRange = selection.getRangeAt(0);
+    activeElement = document.activeElement;
 
     if (clientRects.length > 0) {
       const lastRect = clientRects[clientRects.length - 1];
-      bottomRightX = lastRect.right + window.scrollX; 
-      bottomRightY = lastRect.bottom + window.scrollY; 
+      bottomRightX = lastRect.right + window.scrollX;
+      bottomRightY = lastRect.bottom + window.scrollY;
       insertAiIcon(bottomRightX - 50, bottomRightY + 10);
     }
   }
-}
+};
 
 document.addEventListener('selectionchange', handleSelectionChange);
 
-
 const replaceSelectedText = (newText) => {
-  if (!selectedRange || !copiedText) return; 
+  if (!selectedRange || !copiedText) return;
 
-  if (activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')) {
+  if (
+    activeElement &&
+    (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT')
+  ) {
     const start = activeElement.selectionStart;
     const end = activeElement.selectionEnd;
-    activeElement.value = activeElement.value.slice(0, start) + newText + activeElement.value.slice(end);
-    activeElement.selectionStart = activeElement.selectionEnd = start + newText.length;
-
+    activeElement.value =
+      activeElement.value.slice(0, start) +
+      newText +
+      activeElement.value.slice(end);
+    activeElement.selectionStart = activeElement.selectionEnd =
+      start + newText.length;
   } else {
-
     try {
       const range = selectedRange;
-      const newTextNode = document.createTextNode(newText); 
+      const newTextNode = document.createTextNode(newText);
 
-     
       range.deleteContents();
       range.insertNode(newTextNode);
 
@@ -190,7 +234,6 @@ const replaceSelectedText = (newText) => {
       newRange.setStart(newTextNode, 0);
       newRange.setEnd(newTextNode, newText.length);
       selection.addRange(newRange);
-
     } catch (error) {
       console.error('Error replacing text in regular element:', error);
     }
