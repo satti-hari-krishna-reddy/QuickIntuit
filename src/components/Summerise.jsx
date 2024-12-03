@@ -131,7 +131,7 @@ function TextAdjustComponent({ text, clear }) {
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                    className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md"
+                    className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md bg-white"
                   >
                     <option hidden>Select Type</option>
                     <option value="key-points">Key Points</option>
@@ -142,7 +142,7 @@ function TextAdjustComponent({ text, clear }) {
                   <select
                     value={length}
                     onChange={(e) => setLength(e.target.value)}
-                    className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md"
+                    className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md bg-white"
                   >
                     <option hidden>Select Length</option>
                     <option value="short">Short</option>
