@@ -27,5 +27,7 @@
   will-change: transform;
   backface-visibility: hidden;
   text-rendering: optimizeLegibility;
+  font-smooth: antialiased;
+  transform-style: preserve-3d;
   -webkit-font-smoothing: antialiased;
 }
