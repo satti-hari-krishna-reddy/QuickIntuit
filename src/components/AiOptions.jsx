@@ -1,23 +1,50 @@
-import PropTypes from "prop-types";
-import { MdOutlineSummarize } from "react-icons/md"; 
-import { AiOutlineRobot } from "react-icons/ai"; 
-import { RiBrushLine } from "react-icons/ri";
-import { RiEdit2Line } from "react-icons/ri";
-import { MdTranslate } from "react-icons/md"; 
-import { FaTable } from "react-icons/fa"; 
-import { BsPencilSquare } from "react-icons/bs"; 
-import "@fontsource/orbitron";
-
+import PropTypes from 'prop-types';
+import { MdOutlineSummarize } from 'react-icons/md';
+import { AiOutlineRobot } from 'react-icons/ai';
+import { RiBrushLine } from 'react-icons/ri';
+import { RiEdit2Line } from 'react-icons/ri';
+import { MdTranslate } from 'react-icons/md';
+import { FaTable } from 'react-icons/fa';
+import { BsPencilSquare } from 'react-icons/bs';
+import '@fontsource/orbitron';
 
 const AiOptions = ({ onOptionSelect }) => {
   const aiOptionsList = [
-    { label: "Summarize", icon: <MdOutlineSummarize />, onClick: () => onOptionSelect("summarize") },
-    { label: "Polish & Perfect", icon: <RiBrushLine />, onClick: () => onOptionSelect("write_better") },
-    { label: "Ask AI", icon: <AiOutlineRobot />, onClick: () => onOptionSelect("ask_ai") },
-    { label: "AI Smart Tables", icon: <FaTable />, onClick: () => onOptionSelect("ai_table") },
-    { label: "Translate", icon: <MdTranslate />, onClick: () => onOptionSelect("translate") },
-    { label: "Write using AI", icon: <BsPencilSquare />, onClick: () => onOptionSelect("write") },
-    { label: "Rewrite using AI", icon: <RiEdit2Line />, onClick: () => onOptionSelect("rewrite") },
+    {
+      label: 'Summarize',
+      icon: <MdOutlineSummarize />,
+      onClick: () => onOptionSelect('summarize'),
+    },
+    {
+      label: 'Polish & Perfect',
+      icon: <RiBrushLine />,
+      onClick: () => onOptionSelect('write_better'),
+    },
+    {
+      label: 'Ask AI',
+      icon: <AiOutlineRobot />,
+      onClick: () => onOptionSelect('ask_ai'),
+    },
+    {
+      label: 'AI Smart Tables',
+      icon: <FaTable />,
+      onClick: () => onOptionSelect('ai_table'),
+    },
+    {
+      label: 'Translate',
+      icon: <MdTranslate />,
+      onClick: () => onOptionSelect('translate'),
+    },
+    {
+      label: 'Write using AI',
+      icon: <BsPencilSquare />,
+      onClick: () => onOptionSelect('write'),
+    },
+    {
+      label: 'Rewrite using AI',
+      icon: <RiEdit2Line />,
+      onClick: () => onOptionSelect('rewrite'),
+    },
   ];
 
   const containerStyle = {
@@ -59,15 +86,18 @@ const AiOptions = ({ onOptionSelect }) => {
       {aiOptionsList.map((option, index) => (
         <div key={option.label}>
           <div
-            style={{ ...optionStyle, backgroundColor: index % 2 === 0 ? '#2c2c2e' : 'transparent' }}
+            style={{
+              ...optionStyle,
+              backgroundColor: index % 2 === 0 ? '#2c2c2e' : 'transparent',
+            }}
             onClick={option.onClick}
           >
-           <div style={iconStyle}>
-               {option.icon}
-            </div>
+            <div style={iconStyle}>{option.icon}</div>
             <span>{option.label}</span>
           </div>
-          {index < aiOptionsList.length - 1 && <div style={separatorStyle}></div>}
+          {index < aiOptionsList.length - 1 && (
+            <div style={separatorStyle}></div>
+          )}
         </div>
       ))}
     </div>
