@@ -16,7 +16,6 @@ let bottomRightX = null;
 let bottomRightY = null;
 let selectedText = '';
 
-let copiedText = '';
 let selectedRange = null;
 let activeElement = null;
 
@@ -86,23 +85,26 @@ const insertAiIcon = (mouseX, mouseY) => {
     aiIconContainer.id = 'floatingButton';
     aiIconContainer.style.position = 'absolute';
     aiIconContainer.style.pointerEvents = 'auto';
-    aiIconContainer.style.zIndex = '1000';
+    aiIconContainer.style.zIndex = '2147483646';
     aiIconContainer.style.display = 'block';
 
     document.body.appendChild(aiIconContainer);
 
-    const root = ReactDOM.createRoot(aiIconContainer);
+    let shadowRoot = aiIconContainer.shadowRoot;
+    if (!shadowRoot) {
+      shadowRoot = aiIconContainer.attachShadow({ mode: 'closed' });
+    }
+
+    const root = ReactDOM.createRoot(shadowRoot);
     root.render(<AiOverlayIcon onClick={addIconOptions} />);
-    console.log('Ai Icon inserted');
   }
 
   // Adjust position to keep within bounds
-  const iconWidth = 50; 
-  const iconHeight = 50; 
+  const iconWidth = 50;
+  const iconHeight = 50;
 
   let adjustedX = mouseX;
   let adjustedY = mouseY;
-
 
   if (mouseX + iconWidth > viewportWidth) {
     adjustedX = viewportWidth - iconWidth;
@@ -122,21 +124,20 @@ const insertAiIcon = (mouseX, mouseY) => {
 
   aiIconContainer.style.left = `${adjustedX}px`;
   aiIconContainer.style.top = `${adjustedY}px`;
-  console.log('Ai Icon position updated');
 
   if (!aiIconContainer.hasListener) {
     aiIconContainer.addEventListener('mousedown', (event) => {
-      event.preventDefault(); 
-      event.stopPropagation(); 
+      event.preventDefault();
+      event.stopPropagation();
     });
 
     aiIconContainer.addEventListener('click', (event) => {
-      event.stopPropagation(); 
+      event.stopPropagation();
       event.preventDefault();
     });
 
-    aiIconContainer.hasListener = true; 
-   } 
+    aiIconContainer.hasListener = true;
+  }
 };
 
 // const addIconOptions = () => {
@@ -158,64 +159,64 @@ const insertAiIcon = (mouseX, mouseY) => {
 //   }
 // };
 
-const addIconOptions = () => {
-  const optionsWidth = 200; 
-  const optionsHeight = 500; 
-  const gap = 10; 
+const addIconOptions = (mode) => {
+  const optionsWidth = 200;
+  const optionsHeight = 500;
+  const gap = 10;
 
   if (!aiOptionsContainer) {
     aiOptionsContainer = document.createElement('div');
     aiOptionsContainer.id = 'floatingOptions';
     aiOptionsContainer.style.position = 'absolute';
     aiOptionsContainer.style.pointerEvents = 'auto';
-    aiOptionsContainer.style.zIndex = '1000';
+    aiOptionsContainer.style.zIndex = '2147483646';
     aiOptionsContainer.style.display = 'block';
 
-  
-    let adjustedX = bottomRightX + gap; 
-    let adjustedY = bottomRightY - 50; 
-
     const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight + window.scrollY;
+    const viewportHeight = window.innerHeight;
 
+    let adjustedX =
+      bottomRightX != null
+        ? bottomRightX + gap
+        : (viewportWidth - optionsWidth) / 2;
+
+    let adjustedY =
+      bottomRightY != null
+        ? bottomRightY - 50
+        : window.scrollY + (viewportHeight - optionsHeight) / 2;
+
+    // Prevent going out of bounds
     if (adjustedX + optionsWidth > viewportWidth) {
-      adjustedX = bottomRightX - optionsWidth - gap;
+      adjustedX = viewportWidth - optionsWidth - gap;
     }
-
     if (adjustedX < 0) {
-     
       adjustedX = 0;
     }
-
-    if (adjustedY + optionsHeight > viewportHeight) {
-    
-      adjustedY = viewportHeight - optionsHeight - gap;
+    if (adjustedY + optionsHeight > viewportHeight + window.scrollY) {
+      adjustedY = viewportHeight + window.scrollY - optionsHeight - gap;
     }
-
-    
     if (adjustedY < window.scrollY) {
-     
       adjustedY = window.scrollY + gap;
     }
 
-   
     if (adjustedX <= bottomRightX && adjustedX + optionsWidth > bottomRightX) {
-      adjustedX = bottomRightX + gap; 
+      adjustedX = bottomRightX + gap;
     }
-
 
     aiOptionsContainer.style.left = `${adjustedX}px`;
     aiOptionsContainer.style.top = `${adjustedY}px`;
 
     document.body.appendChild(aiOptionsContainer);
 
-    const shadowRoot = aiOptionsContainer.attachShadow({ mode: 'closed' });
+    let shadowRoot = aiOptionsContainer.shadowRoot;
+    if (!shadowRoot) {
+      shadowRoot = aiOptionsContainer.attachShadow({ mode: 'closed' });
+    }
 
     const root = ReactDOM.createRoot(shadowRoot);
-    root.render(<AiOptions onOptionSelect={handleOptionSelect} />);
+    root.render(<AiOptions onOptionSelect={handleOptionSelect} mode={mode} />);
   }
 };
-
 
 const removeFloatingComponentContainer = () => {
   if (floatingComponentContainer) {
@@ -225,47 +226,41 @@ const removeFloatingComponentContainer = () => {
 };
 
 const handleOptionSelect = (option) => {
-  const componentWidth = 400; 
-  const componentHeight = 600; 
-  const gap = 10; 
+  const componentWidth = 400;
+  const componentHeight = 600;
+  const gap = 10;
 
   if (!floatingComponentContainer) {
     floatingComponentContainer = document.createElement('div');
     floatingComponentContainer.id = 'floatingComponentContainer';
     floatingComponentContainer.style.position = 'absolute';
     floatingComponentContainer.style.pointerEvents = 'auto';
-    floatingComponentContainer.style.zIndex = '1001';
+    floatingComponentContainer.style.zIndex = '2147483646';
     document.body.appendChild(floatingComponentContainer);
   }
 
- 
-  let adjustedX = bottomRightX - 40; 
+  let adjustedX = bottomRightX - 40;
   let adjustedY = bottomRightY - 80;
 
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight + window.scrollY;
 
-
-  adjustedX = bottomRightX - componentWidth / 2; 
-
+  adjustedX = bottomRightX - componentWidth / 2;
 
   if (adjustedX + componentWidth > viewportWidth) {
-    adjustedX = viewportWidth - componentWidth - gap; 
+    adjustedX = viewportWidth - componentWidth - gap;
   }
 
-  
   if (adjustedX < 0) {
     adjustedX = gap;
   }
 
-  
   if (adjustedY + componentHeight > viewportHeight) {
-    adjustedY = viewportHeight - componentHeight - gap; 
+    adjustedY = viewportHeight - componentHeight - gap;
   }
 
-
   if (adjustedY < window.scrollY) {
-    adjustedY = window.scrollY + gap; 
+    adjustedY = window.scrollY + gap;
   }
 
   floatingComponentContainer.style.left = `${adjustedX}px`;
@@ -287,6 +282,7 @@ const handleOptionSelect = (option) => {
   // Conditionally render component based on option
   switch (option) {
     case 'summarize':
+      console.log('Selected text:', selectedText);
       root.render(
         <TextAdjustComponent
           text={selectedText}
@@ -319,7 +315,12 @@ const handleOptionSelect = (option) => {
       );
       break;
     case 'write':
-      root.render(<Write clear={removeFloatingComponentContainer} />);
+      root.render(
+        <Write
+          clear={removeFloatingComponentContainer}
+          replaceText={replaceSelectedText}
+        />
+      );
       break;
     case 'rewrite':
       root.render(
@@ -366,7 +367,7 @@ const handleOptionSelect = (option) => {
 //   const viewportHeight = window.innerHeight + window.scrollY;
 
 //   // Adjust X to center the component (align the center of the component with the icon)
-//   adjustedX = bottomRightX - componentWidth / 2; 
+//   adjustedX = bottomRightX - componentWidth / 2;
 
 //   // Prevent overflow to the right
 //   if (adjustedX + componentWidth > viewportWidth) {
@@ -393,7 +394,6 @@ const handleOptionSelect = (option) => {
 //   floatingComponentContainer.style.top = `${adjustedY}px`;
 // };
 
-
 const handleSelectionChange = () => {
   const selection = window.getSelection();
 
@@ -414,7 +414,6 @@ const handleSelectionChange = () => {
     const range = selection.getRangeAt(0);
     const clientRects = range.getClientRects();
 
-    copiedText = selection.toString().trim();
     selectedRange = selection.getRangeAt(0);
     activeElement = document.activeElement;
 
@@ -430,7 +429,7 @@ const handleSelectionChange = () => {
 document.addEventListener('selectionchange', handleSelectionChange);
 
 const replaceSelectedText = (newText) => {
-  if (!selectedRange || !copiedText) return;
+  if (!selectedRange) return;
 
   if (
     activeElement &&
@@ -468,3 +467,98 @@ window.addEventListener('resize', () => {
   viewportHeight = window.innerHeight;
   viewportWidth = window.innerWidth;
 });
+
+document.addEventListener('keydown', (event) => {
+  if (event.altKey && event.key.toLowerCase() === 'q') {
+    if (aiIconContainer) {
+      aiIconContainer.remove();
+      aiIconContainer = null;
+    }
+    if (aiOptionsContainer) {
+      aiOptionsContainer.remove();
+      aiOptionsContainer = null;
+    }
+    removeFloatingComponentContainer();
+    addIconOptions('standalone');
+  }
+});
+
+async function extractTextHybrid(maxTokens) {
+  const unwantedSelectors = [
+    'nav', 'footer', '.sidebar', '.advertisement', 'header', '#ads', '.promo', 
+    'script', 'style'
+  ];
+
+  const isEcommerce = () => {
+    const ecommerceIndicators = ['cart', 'product', 'checkout', 'add-to-cart'];
+    return ecommerceIndicators.some(keyword => document.body.innerHTML.toLowerCase().includes(keyword));
+  };
+
+  const extractGeneralText = (mainElement) => {
+    const elements = Array.from(mainElement.querySelectorAll('*'))
+      .filter(el => 
+        !unwantedSelectors.some(selector => el.matches(selector) || el.closest(selector))
+      )
+      .map(el => el.textContent.trim())
+      .filter(text => 
+        text.length > 0 && text.split(/\s+/).length > 2 && !text.match(/^(function|var|\(function|\[|{)/)
+      );
+
+    return elements.join(' ').replace(/\s+/g, ' ').trim();
+  };
+
+  const extractEcommerceText = () => {
+    const productSelectors = [
+      'h1', 
+      'h2', 
+      'p', 
+      '.price', 
+      '.offer', 
+      '.discount', 
+      '.rating, .stars, .review-score', 
+      '.review, .user-review, .customer-feedback', 
+      '.feedback, .comment, .summary', 
+      '.rating-stars, .rating-number' 
+    ];    
+  
+    const elements = Array.from(document.querySelectorAll(productSelectors.join(',')))
+      .map(el => el.textContent.trim())
+      .filter(text => text.length > 0);
+  
+    return elements.join(' ').replace(/\s+/g, ' ').trim();
+  };
+  
+
+  // Detect type of website and extract text
+  const mainElement = document.querySelector('main, article, section') || document.body;
+  const rawText = isEcommerce() ? extractEcommerceText() : extractGeneralText(mainElement);
+
+  // Trim to max tokens (assuming ~4 characters per token)
+  const tokenLimit = maxTokens * 4; 
+  return rawText.slice(0, tokenLimit);
+}
+
+function waitForDynamicContent(callback, timeout = 5000) {
+  const observer = new MutationObserver((_, obs) => {
+    if (document.readyState === 'complete') {
+      obs.disconnect();
+      callback();
+    }
+  });
+  observer.observe(document, { childList: true, subtree: true });
+  setTimeout(() => observer.disconnect(), timeout);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    waitForDynamicContent(async () => {
+       selectedText = await extractTextHybrid(1000);
+      console.log('Selected text:', selectedText);
+    });
+  });
+} else {
+  (async () => {
+     selectedText = await extractTextHybrid(1000);
+    console.log('Selected text:', selectedText);
+  })();
+}
