@@ -8,26 +8,27 @@ const supportedModes = {
   '⭐ Pros and Cons Table':
     'summerise this textual data into a table of pros and cons',
   '🔑 Key Takeaways':
-    "Summarize the text into a table with two columns: 'Key Point' and 'Details'. Focus on capturing the most important highlights and their explanations.",
-  '⚖️ Compare & Contrast': 'create a similarities and differences table.',
+    'Summarize the given text into a table with two columns: 1. Key Point, 2. Details, for the Details coloum focus on capturing the most important highlights and their explanations in a clean, structured table format.',
+  '⚖️ Compare & Contrast':
+    'Create a table with two sections: "Similarities" and "Differences". Clearly list common points under "Similarities" and contrasting points under "Differences".',
   '📋 Actionable Insights':
     'Extract actionable recommendations or next steps from the text in a table format with two columns: 1. Actionable Insight: The specific action or strategy. 2. Reasoning: Why this action is important or relevant.',
   '🔍 Cause-Effect Breakdown':
     'Identify cause-and-effect relationships from the text and present them in a table with two columns: 1. Cause: The reason or trigger. 2. Effect: The result or consequence.',
   '⚙️ Decision Flow Chart':
-    'Extract decision-making information from the text and create a table with three columns: 1. Decision Point: A key question or decision step. 2. Options: Available choices or paths. 3. Outcome: The result of each choice or path.',
+    'Create a table with three columns: "Decision Point", "Options", and "Outcome". For each key decision, list the question under "Decision Point", the available choices under "Options", and the result of each choice under "Outcome" with clear and concise descriptions.',
   '❓ Questions & Answers':
     'Create a table with two columns: 1. Question: A relevant question about the text. 2. Answer: A concise answer based on the content.',
   '📊 Data Analysis Table':
-    'Analyze the following text to extract relevant data points and present them in a structured table. Include columns for numerical values, categories, or key descriptive details mentioned in the text. Focus on factual accuracy, clearly summarizing the data. If no explicit data exists, do not infer but organize available facts logically in tabular format.',
+    'Create a structured table to organize relevant data points from the text. Include columns for "Numerical Values", "Categories", and "Key Descriptions". Focus on summarizing explicit data accurately without making inferences. If no numerical data is provided, organize available facts clearly and logically in the table.',
   '📅 Timeline Table':
-    "Please extract the sequence of events mentioned in the text and present them in a timeline table format. The table should have three columns: 'Event', 'Date/Time'. For each event, provide the name or title of the event, the date or time it occurred.",
+    'Create a table with two columns: "Event" and "Date/Time". For each entry, list the name or title of the event under "Event" and the corresponding date or time it occurred under "Date/Time". Ensure the sequence of events is clear and organized chronologically.',
   '🧠 Relationship Mapping Table':
     "Analyze the relationships or connections between elements in the text and present them in a table with three columns: 'Element 1', 'Connection/Relation', and 'Element 2'. Include thematic or logical connections where relevant.",
   '📖 Chapter Summary':
     "Please generate a summary for each chapter or section of the text in a table format. The table should have three columns: 'Chapter Number', 'Chapter Title', and 'Key Points'. For each chapter, provide the chapter number, title, and a brief summary of the main points covered.",
   '😊 Sentiment Analysis':
-    'Analyze the sentiment of the text and create a table with two columns: 1. Text Segment: A specific part of the text. 2. Sentiment: Positive, negative, or neutral.',
+    'Create a table with two columns: "Text Segment" and "Sentiment". Break down the text into specific, meaningful parts under "Text Segment" and classify each as "Positive", "Negative", or "Neutral" under "Sentiment". Ensure clarity by focusing on distinct emotional tones for each segment.',
 };
 
 const AiSmartTable = ({ initialText, clear }) => {
@@ -106,10 +107,21 @@ const AiSmartTable = ({ initialText, clear }) => {
   };
 
   const renderTable = () => {
-    if (!parsedTable) {
-      console.log('No table data to render.');
-      return null;
+    // Check if parsedTable exists and has valid structure
+    if (
+      !parsedTable ||
+      !Array.isArray(parsedTable.headers) ||
+      !Array.isArray(parsedTable.rows)
+    ) {
+      console.log('Invalid or missing table data.');
+      return <div>No data to display.</div>;
     }
+
+    // Handle empty table scenario
+    if (parsedTable.headers.length === 0 || parsedTable.rows.length === 0) {
+      return <div>No data available.</div>;
+    }
+
     return (
       <div className="relative max-w-full overflow-x-auto border border-gray-300 rounded-lg">
         <table className="table-auto w-full text-sm border-collapse">
@@ -119,22 +131,40 @@ const AiSmartTable = ({ initialText, clear }) => {
                 <th
                   key={idx}
                   className="px-4 py-2 text-left border border-gray-300"
+                  scope="col" // Accessibility improvement
                 >
-                  {header}
+                  {header.split(/(\*\*.*?\*\*|## .*)/g).map((part, i) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                      // Bold syntax
+                      return <strong key={i}>{part.slice(2, -2)}</strong>;
+                    } else if (part.startsWith('## ')) {
+                      // Markdown header (## Key Point)
+                      return (
+                        <span key={i} className="text-lg font-bold">
+                          {part.slice(3)}
+                        </span>
+                      );
+                    } else {
+                      // Plain text
+                      return part;
+                    }
+                  })}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {parsedTable.rows.map((row, rowIdx) =>
-              row.every((cell) => cell === '---') ? null : ( // Skip divider rows
+              // Skip rows that act as dividers (all cells === "---")
+              Array.isArray(row) &&
+              row.every((cell) => cell === '---') ? null : (
                 <tr key={rowIdx} className="odd:bg-white even:bg-gray-50">
                   {row.map((cell, cellIdx) => (
                     <td
                       key={cellIdx}
                       className="px-4 py-2 border border-gray-300"
                     >
-                      {/* Replace only text between ** with bold */}
+                      {/* Replace only valid bold syntax **text** with bold */}
                       {cell
                         .split(/(\*\*.*?\*\*)/g)
                         .map((part, i) =>
