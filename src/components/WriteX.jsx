@@ -66,7 +66,7 @@ function Write({ clear }) {
       .writeText(aiText)
       .then(() => {
         setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000); // Revert back after 2 seconds
+        setTimeout(() => setIsCopied(false), 2000);
       })
       .catch((error) => {
         console.error('Copy failed:', error);
@@ -156,32 +156,35 @@ function Write({ clear }) {
               </>
             ) : (
               <>
-                {' '}
-                <div className="content-box p-4 rounded-md shadow-md overflow-y-auto max-h-96">
+                <div className="content-box p-4 rounded-xl shadow-lg overflow-y-auto max-h-96">
                   <div
-                    className="text-md font-normal text-gray-800 leading-relaxed whitespace-pre-wrap break-words border border-gray-200 rounded-lg p-4 bg-white"
+                    className="text-md font-medium text-gray-700 leading-relaxed whitespace-pre-wrap break-words border border-gray-300 rounded-lg p-6 bg-gray-50"
                     dangerouslySetInnerHTML={{ __html: parseMarkdown(aiText) }}
                   />
                 </div>
-                <button
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 mt-4 rounded-lg shadow-md hover:shadow-lg w-full transition-all duration-300 transform hover:scale-105"
-                  onClick={() => {
-                    setAiText('');
-                    setIsTyping(false);
-                  }}
-                >
-                  Back
-                </button>
-                <button
-                  className={`${
-                    isCopied
-                      ? 'bg-green-400 hover:bg-green-500'
-                      : 'bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600'
-                  } text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
-                  onClick={copyToClipboard}
-                >
-                  {isCopied ? 'Copied!' : 'Copy'}
-                </button>
+
+                <div className="mt-6 space-x-4 flex justify-between">
+                  <button
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg shadow-md transition-transform duration-300 transform hover:scale-105"
+                    onClick={() => {
+                      setAiText('');
+                      setIsTyping(false);
+                    }}
+                  >
+                    Back
+                  </button>
+
+                  <button
+                    className={`${
+                      isCopied
+                        ? 'bg-green-500 hover:bg-green-600'
+                        : 'bg-blue-500 hover:bg-blue-600'
+                    } text-white px-6 py-2 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105`}
+                    onClick={copyToClipboard}
+                  >
+                    {isCopied ? 'Copied!' : 'Copy 📋'}
+                  </button>
+                </div>
               </>
             )}
           </>
@@ -193,6 +196,7 @@ function Write({ clear }) {
 
 Write.propTypes = {
   clear: PropTypes.func.isRequired,
+  replaceText: PropTypes.func.isRequired,
 };
 
 export default Write;
