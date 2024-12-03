@@ -6,15 +6,19 @@ import Draggable from 'react-draggable';
 
 const supportedModes = {
   'Grammar & Spelling ✏️':
-    'Correct the grammar and spelling errors in the following text. Provide corrections only, no commentary, and show examples: \n',
+    'Fix all grammar, punctuation, and spelling errors in the text below. Return the corrected text only, formatted exactly as intended for use. No additional comments or examples: \n',
+
   'Rephrase It 🔄':
-    'Rephrase the following sentence to make it shorter, clearer, and more impactful. Focus on removing unnecessary words or simplifying complex structures while retaining the meaning. Provide examples: \n',
+    'Rephrase the text below to improve readability and flow. Focus on enhancing clarity and maintaining the original meaning. Preserve the style and tone unless specified otherwise. Return only the rephrased text without commentary: \n',
+
   'Keep Consistent 🔗':
-    'Ensure consistency in spelling, capitalization, and style throughout the text. Focus on making all terms and phrases uniform (e.g., spelling variations, punctuation, capitalization). Provide examples: \n',
+    'Ensure consistency in the text below. Standardize spelling, capitalization, punctuation, and stylistic elements throughout. Return the uniform and corrected text only, without commentary or examples: \n',
+
   'Word Boost 🚀':
-    'Suggest stronger or more precise words to improve the clarity and impact of the following sentence. Aim to replace repetitive or vague words with more varied and specific vocabulary. Provide examples: \n',
+    'Improve the text below by replacing vague or repetitive words with stronger, more precise alternatives. Retain the tone and meaning. Return the improved text only, without commentary or suggestions: \n',
+
   'Mood Enhancer 💬':
-    'Adjust the tone of the following text based on the context. If the text is too formal, suggest making it friendlier or more conversational. If it’s too informal, suggest making it more formal. Provide examples: \n',
+    'Adjust the tone of the text below to match the specified mood or context (e.g., friendly, formal, conversational). Ensure the revised text fits seamlessly with the desired tone. Return only the updated text, with no commentary or examples: \n',
 };
 
 const WriteRight = ({ initialText, clear, replaceText }) => {
@@ -85,47 +89,61 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
   return (
     <Draggable>
       <div
-        className="draggable relative container mx-auto p-4 max-w-xl rounded-lg shadow-lg bg-gray-50"
-        style={{ backdropFilter: 'blur(18px)' }}
+        className="draggable relative container mx-auto p-6 max-w-xl rounded-lg shadow-xl bg-white"
+        style={{ backdropFilter: 'blur(12px)' }}
       >
         {loading ? (
           <Loader message={loadingMessage} />
         ) : (
           <>
-            <div className="flex justify-between items-center mb-4">
-              <div className="header-text flex items-center mb-2">
+            <div className="flex justify-between items-center mb-6">
+              <div className="header-text flex items-center">
                 {enhancedText && (
-                  <div className="text-sm text-gray-700 mr-2">
-                    Here’s an improved version
+                  <div className="text-sm text-gray-600 font-medium mr-3">
+                    Here’s an improved version:
                   </div>
                 )}
-                <span className="text-xs text-white bg-blue-500 rounded-full px-2 py-1">
+                <span className="text-xs text-white bg-blue-600 rounded-full px-3 py-1 font-semibold shadow-sm">
                   AI Generated
                 </span>
               </div>
               <button
-                className="cursor-pointer text-gray-500 font-semibold hover:text-red-500 transition duration-150"
+                className="text-gray-400 hover:text-gray-600 transition duration-200"
                 onClick={() => {
                   clear();
                   clearSession();
                   setEnhancedText(null);
                 }}
+                aria-label="Close"
               >
-                X
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
             </div>
 
             {enhancedText ? (
               <div>
                 <div
-                  className="text-md font-normal text-gray-800 bg-white p-4 rounded-md shadow-md break-words whitespace-normal w-full overflow-y-auto max-h-96"
+                  className="text-md font-normal text-gray-700 bg-gray-100 p-4 rounded-lg shadow-sm break-words whitespace-pre-wrap max-h-96 overflow-y-auto"
                   dangerouslySetInnerHTML={{
                     __html: parseMarkdown(enhancedText),
                   }}
                 />
-                <div className="flex gap-4 mt-4">
+                <div className="flex gap-4 mt-6">
                   <button
-                    className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-md w-full transition duration-200"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium w-full transition duration-200 shadow-md"
                     onClick={() => {
                       replaceText(enhancedText);
                     }}
@@ -133,7 +151,7 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
                     Replace
                   </button>
                   <button
-                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md w-full transition duration-200"
+                    className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-lg font-medium w-full transition duration-200 shadow-md"
                     onClick={() => {
                       setEnhancedText(null);
                       clearSession();
@@ -144,15 +162,15 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
                 </div>
               </div>
             ) : (
-              <div className="content-box p-4 bg-white rounded-md shadow-md mb-4">
-                <div className="mb-4">
-                  <label className="text-md font-semibold text-gray-700 mb-1">
+              <div className="content-box bg-gray-50 p-5 rounded-lg shadow-md">
+                <div className="mb-5">
+                  <label className="block text-md font-semibold text-gray-700 mb-2">
                     Options:
                   </label>
                   <select
                     value={selectedMode}
                     onChange={(e) => setSelectedMode(e.target.value)}
-                    className="select-option text-sm px-2 py-1 text-gray-600 border border-gray-300 rounded-md w-full"
+                    className="text-sm px-3 py-2 text-gray-700 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
                   >
                     <option hidden>Select Mode</option>
                     {Object.keys(supportedModes).map((key) => (
@@ -163,16 +181,15 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
                   </select>
                 </div>
 
-                {/* Show tone selection only when Mood Enhancer is selected */}
                 {selectedMode === 'Mood Enhancer 💬' && (
-                  <div className="mb-4">
-                    <label className="text-md font-semibold text-gray-700 mb-1">
+                  <div className="mb-5">
+                    <label className="block text-md font-semibold text-gray-700 mb-2">
                       Select Tone:
                     </label>
                     <select
                       value={selectedTone}
                       onChange={(e) => setSelectedTone(e.target.value)}
-                      className="select-option text-sm px-2 py-1 text-gray-600 border border-gray-300 rounded-md w-full"
+                      className="text-sm px-3 py-2 text-gray-700 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
                     >
                       <option hidden>Select Tone</option>
                       <option value="Confident">Confident</option>
@@ -184,7 +201,7 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
                 )}
 
                 <button
-                  className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded-md w-full transition duration-200"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium w-full transition duration-200 shadow-md"
                   onClick={handleEnhanceText}
                 >
                   Refine
