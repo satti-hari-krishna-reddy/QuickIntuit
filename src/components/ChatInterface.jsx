@@ -32,12 +32,14 @@ function ChatInterface({ text, clear }) {
 
   const handleSend = async () => {
     if (input.trim() === '' && !firstTime) return;
+
     let userMessage = { role: 'user', text: input };
 
     if (firstTime) {
       firstTime = false;
       userMessage = initalMessage;
     }
+
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
 
@@ -45,16 +47,21 @@ function ChatInterface({ text, clear }) {
     try {
       const { available } = await ai.languageModel.capabilities();
       if (available !== 'no') {
-        session = await ai.languageModel.create({
-          temperature: 1,
-          topK: 3,
-        });
+        // Check if session already exists, otherwise create a new one
+        if (!session) {
+          session = await ai.languageModel.create({
+            temperature: 1,
+            topK: 3,
+          });
+        }
+
         const stream = session.promptStreaming(input || initalMessage.text);
         let fullResponse = '';
         for await (const chunk of stream) {
           fullResponse = chunk;
           console.log('Response:', fullResponse);
         }
+
         setMessages((prev) => [...prev, { role: 'ai', text: fullResponse }]);
       }
     } catch (error) {

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Loader from './Loader';
 import { translateText } from '../translate';
 import PropTypes from 'prop-types';
 import Dragable from 'react-draggable';
+import { detectLanguage } from '../detect-language';
 
 // Supported language pairs
 const supportedPairs = {
@@ -160,22 +161,26 @@ const Translate = ({ initialText, clear }) => {
   const [loadingMessage, setLoadingMessage] = useState(
     'Detecting the language...'
   );
-  const [srcLang] = useState('');
+  const [srcLang, setSrcLang] = useState('');
   const [tgtLang, setTgtLang] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Detect the initial language of the input text
-  // const detectInitialLanguage = async () => {
-  //     try {
-  //         const result = await detectLanguage(text);
-  //         setLoading(false);
-  //         setSrcLang(result);
-  //     } catch (error) {
-  //         console.error("Error detecting language:", error);
-  //         setLoadingMessage("Error detecting language. Try again later.");
-  //         setTimeout(() => {clear();}, 3000);
-  //     }
-  // };
+  const detectInitialLanguage = async () => {
+    try {
+      const result = await detectLanguage(text);
+      setLoading(false);
+      setSrcLang(result);
+    } catch (error) {
+      console.error('Error detecting language:', error);
+      setLoadingMessage('Error detecting language. Try again later.');
+      setTimeout(() => {
+        clear();
+      }, 3000);
+    }
+  };
+  useEffect(() => {
+    detectInitialLanguage();
+  }, []);
 
   // Handle text translation
   const handleTranslate = async () => {

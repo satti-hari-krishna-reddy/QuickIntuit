@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { getSummary } from '../summerize';
 import Loader from './Loader';
 import Draggable from 'react-draggable';
+import { FaVolumeUp } from 'react-icons/fa';
 
 function TextAdjustComponent({ text, clear }) {
   const [isAdjustOpen, setAdjustOpen] = useState(false);
@@ -54,6 +55,13 @@ function TextAdjustComponent({ text, clear }) {
       .catch((error) => {
         console.error('Copy failed:', error);
       });
+  };
+
+  const readAloud = () => {
+    const speech = new SpeechSynthesisUtterance();
+    speech.text = summary; // Use the summary text to be read aloud
+    speech.lang = 'en-US'; // You can adjust language here
+    window.speechSynthesis.speak(speech);
   };
 
   useEffect(() => {
@@ -119,6 +127,12 @@ function TextAdjustComponent({ text, clear }) {
                   >
                     {isCopied ? 'Copied!' : 'Copy'}
                   </button>
+                  <button
+                    className="read-aloud-btn text-gray-600 text-sm hover:text-gray-800 transition-all duration-300 transform hover:scale-105"
+                    onClick={readAloud}
+                  >
+                    <FaVolumeUp />
+                  </button>
                 </div>
               ) : (
                 <div className="adjust-options flex space-x-4 border-t pt-2 mt-2">
@@ -167,8 +181,6 @@ function TextAdjustComponent({ text, clear }) {
 
 TextAdjustComponent.propTypes = {
   text: PropTypes.string.isRequired,
-};
-TextAdjustComponent.propTypes = {
   clear: PropTypes.func.isRequired,
 };
 

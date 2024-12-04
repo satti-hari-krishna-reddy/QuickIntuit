@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Enhanced AI Web Augmentation",
+  "name": "QuickIntuit: AI Web Assistant",
   "version": "1.0",
-  "description": "Injects AI-driven overlays and dynamic widgets into existing webpages.",
+  "description": "A powerful AI browser extension that provides intelligent overlays, smart tables, real-time voice chat, and on-demand writing assistance, enhancing productivity while you browse.",
   "permissions": ["storage", "activeTab", "scripting"],
   "content_scripts": [
     {

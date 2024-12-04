@@ -89,14 +89,14 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
   return (
     <Draggable>
       <div
-        className="draggable relative container mx-auto p-6 max-w-xl rounded-lg shadow-xl bg-white"
+        className="draggable relative container mx-auto p-4 max-w-xl rounded-lg shadow-lg bg-gray-50"
         style={{ backdropFilter: 'blur(12px)' }}
       >
         {loading ? (
           <Loader message={loadingMessage} />
         ) : (
           <>
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-4">
               <div className="header-text flex items-center">
                 {enhancedText && (
                   <div className="text-sm text-gray-600 font-medium mr-3">

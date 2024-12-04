@@ -1,5 +1,5 @@
 const initSummarizationSession = async (type, length) => {
-  const summarizationApiAvailable = ai.summarizer;
+  const summarizationApiAvailable = self.ai.summarizer;
   if (!summarizationApiAvailable) {
     throw new Error('Summarization API is not available.');
   }
@@ -25,13 +25,11 @@ export const getSummary = async (text, type, length) => {
   if (!length || length === 'Select Length') {
     length = 'long';
   }
-  console.log('Getting summary for:', text);
   const { session, status } = await initSummarizationSession(type, length);
   if (status === 'Downloading') {
     return 'Model is currently downloading.';
   }
   const summary = await session.summarize(text);
   session.destroy();
-  console.log('Summary:', summary);
   return summary;
 };

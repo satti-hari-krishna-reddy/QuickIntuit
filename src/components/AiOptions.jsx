@@ -3,8 +3,6 @@ import { MdOutlineSummarize } from 'react-icons/md';
 import { AiOutlineRobot } from 'react-icons/ai';
 import { FaVolumeUp } from 'react-icons/fa';
 
-
-
 import { RiBrushLine } from 'react-icons/ri';
 import { RiEdit2Line } from 'react-icons/ri';
 import { MdTranslate } from 'react-icons/md';
@@ -37,9 +35,9 @@ const AiOptions = ({ onOptionSelect, mode }) => {
         onClick: () => onOptionSelect('write'),
       },
       {
-        label: 'Vocal Mode',
+        label: 'Live Voice Chat',
         icon: <FaVolumeUp />,
-        onClick: () => onOptionSelect('ask_ai'),
+        onClick: () => onOptionSelect('voice_chat'),
       },
     ];
   } else {
@@ -49,7 +47,8 @@ const AiOptions = ({ onOptionSelect, mode }) => {
         icon: <MdOutlineSummarize />,
         onClick: () => {
           console.log('summarize');
-          onOptionSelect('summarize') }
+          onOptionSelect('summarize');
+        },
       },
       {
         label: 'Polish & Perfect',
@@ -80,6 +79,11 @@ const AiOptions = ({ onOptionSelect, mode }) => {
         label: 'Rewrite using AI',
         icon: <RiEdit2Line />,
         onClick: () => onOptionSelect('rewrite'),
+      },
+      {
+        label: 'Live Voice Chat',
+        icon: <FaVolumeUp />,
+        onClick: () => onOptionSelect('voice_chat'),
       },
     ];
   }
