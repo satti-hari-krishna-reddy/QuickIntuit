@@ -8,6 +8,7 @@ import AiSmartTable from './components/AiSmartTable';
 import Write from './components/WriteX';
 import ReWrite from './components/Rewrite';
 import WriteRight from './components/WriteRight';
+import VoiceAssistant from './components/VoiceChat';
 
 let aiIconContainer = null;
 let aiOptionsContainer = null;
@@ -282,7 +283,6 @@ const handleOptionSelect = (option) => {
   // Conditionally render component based on option
   switch (option) {
     case 'summarize':
-      console.log('Selected text:', selectedText);
       root.render(
         <TextAdjustComponent
           text={selectedText}
@@ -337,6 +337,14 @@ const handleOptionSelect = (option) => {
           initialText={selectedText}
           clear={removeFloatingComponentContainer}
           replaceText={replaceSelectedText}
+        />
+      );
+      break;
+    case 'voice_chat':
+      root.render(
+        <VoiceAssistant
+          text={selectedText}
+          clear={removeFloatingComponentContainer}
         />
       );
       break;
@@ -485,23 +493,38 @@ document.addEventListener('keydown', (event) => {
 
 async function extractTextHybrid(maxTokens) {
   const unwantedSelectors = [
-    'nav', 'footer', '.sidebar', '.advertisement', 'header', '#ads', '.promo', 
-    'script', 'style'
+    'nav',
+    'footer',
+    '.sidebar',
+    '.advertisement',
+    'header',
+    '#ads',
+    '.promo',
+    'script',
+    'style',
   ];
 
   const isEcommerce = () => {
     const ecommerceIndicators = ['cart', 'product', 'checkout', 'add-to-cart'];
-    return ecommerceIndicators.some(keyword => document.body.innerHTML.toLowerCase().includes(keyword));
+    return ecommerceIndicators.some((keyword) =>
+      document.body.innerHTML.toLowerCase().includes(keyword)
+    );
   };
 
   const extractGeneralText = (mainElement) => {
     const elements = Array.from(mainElement.querySelectorAll('*'))
-      .filter(el => 
-        !unwantedSelectors.some(selector => el.matches(selector) || el.closest(selector))
+      .filter(
+        (el) =>
+          !unwantedSelectors.some(
+            (selector) => el.matches(selector) || el.closest(selector)
+          )
       )
-      .map(el => el.textContent.trim())
-      .filter(text => 
-        text.length > 0 && text.split(/\s+/).length > 2 && !text.match(/^(function|var|\(function|\[|{)/)
+      .map((el) => el.textContent.trim())
+      .filter(
+        (text) =>
+          text.length > 0 &&
+          text.split(/\s+/).length > 2 &&
+          !text.match(/^(function|var|\(function|\[|{)/)
       );
 
     return elements.join(' ').replace(/\s+/g, ' ').trim();
@@ -509,32 +532,36 @@ async function extractTextHybrid(maxTokens) {
 
   const extractEcommerceText = () => {
     const productSelectors = [
-      'h1', 
-      'h2', 
-      'p', 
-      '.price', 
-      '.offer', 
-      '.discount', 
-      '.rating, .stars, .review-score', 
-      '.review, .user-review, .customer-feedback', 
-      '.feedback, .comment, .summary', 
-      '.rating-stars, .rating-number' 
-    ];    
-  
-    const elements = Array.from(document.querySelectorAll(productSelectors.join(',')))
-      .map(el => el.textContent.trim())
-      .filter(text => text.length > 0);
-  
+      'h1',
+      'h2',
+      'p',
+      '.price',
+      '.offer',
+      '.discount',
+      '.rating, .stars, .review-score',
+      '.review, .user-review, .customer-feedback',
+      '.feedback, .comment, .summary',
+      '.rating-stars, .rating-number',
+    ];
+
+    const elements = Array.from(
+      document.querySelectorAll(productSelectors.join(','))
+    )
+      .map((el) => el.textContent.trim())
+      .filter((text) => text.length > 0);
+
     return elements.join(' ').replace(/\s+/g, ' ').trim();
   };
-  
 
   // Detect type of website and extract text
-  const mainElement = document.querySelector('main, article, section') || document.body;
-  const rawText = isEcommerce() ? extractEcommerceText() : extractGeneralText(mainElement);
+  const mainElement =
+    document.querySelector('main, article, section') || document.body;
+  const rawText = isEcommerce()
+    ? extractEcommerceText()
+    : extractGeneralText(mainElement);
 
   // Trim to max tokens (assuming ~4 characters per token)
-  const tokenLimit = maxTokens * 4; 
+  const tokenLimit = maxTokens * 4;
   return rawText.slice(0, tokenLimit);
 }
 
@@ -552,13 +579,11 @@ function waitForDynamicContent(callback, timeout = 5000) {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     waitForDynamicContent(async () => {
-       selectedText = await extractTextHybrid(1000);
-      console.log('Selected text:', selectedText);
+      selectedText = await extractTextHybrid(1000);
     });
   });
 } else {
   (async () => {
-     selectedText = await extractTextHybrid(1000);
-    console.log('Selected text:', selectedText);
+    selectedText = await extractTextHybrid(1000);
   })();
 }
