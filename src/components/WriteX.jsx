@@ -110,14 +110,14 @@ function Write({ clear }) {
                 <div className="content-box p-4 bg-white rounded-md shadow-md space-y-4">
                   <div className="flex flex-col space-y-3">
                     <textarea
-                      className="flex-grow p-3 h-32 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-400 transition-shadow duration-200 resize-none overflow-y-auto"
+                      className="flex-grow p-3 h-32 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-400 transition-shadow duration-200 resize-none overflow-y-auto bg-white"
                       placeholder="Type your prompt..."
                       value={prompt}
                       onChange={(e) => setPrompt(e.target.value)}
                       style={{ minHeight: '100px', maxHeight: '300px' }}
                     />
                     <textarea
-                      className="flex-grow p-3 h-32 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-400 transition-shadow duration-200 resize-none overflow-y-auto"
+                      className="flex-grow p-3 h-32 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-400 transition-shadow duration-200 resize-none overflow-y-auto bg-white"
                       placeholder="Your context..."
                       value={context}
                       onChange={(e) => setContext(e.target.value)}
@@ -128,7 +128,7 @@ function Write({ clear }) {
                     <select
                       value={tone}
                       onChange={(e) => setTone(e.target.value)}
-                      className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md"
+                      className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md bg-white"
                     >
                       <option hidden> Select Tone</option>
                       <option value="neutral">Neutral</option>
@@ -138,7 +138,7 @@ function Write({ clear }) {
                     <select
                       value={length}
                       onChange={(e) => setLength(e.target.value)}
-                      className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md"
+                      className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md bg-white"
                     >
                       <option hidden>Select Length</option>
                       <option value="short">Short</option>

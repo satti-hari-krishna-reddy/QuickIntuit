@@ -137,7 +137,7 @@ function ReWrite({ text, clear, replaceText }) {
                   <select
                     value={tone}
                     onChange={(e) => setTone(e.target.value)}
-                    className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md"
+                    className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md bg-white"
                   >
                     <option hidden>Tone</option>
                     <option value="as-is">As Is</option>
@@ -147,7 +147,7 @@ function ReWrite({ text, clear, replaceText }) {
                   <select
                     value={format}
                     onChange={(e) => setFormat(e.target.value)}
-                    className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md"
+                    className="select-option text-sm px-2 py-1 text-gray-600 border rounded-md bg-white"
                   >
                     <option hidden>Format</option>
                     <option value="as-is">As Is</option>

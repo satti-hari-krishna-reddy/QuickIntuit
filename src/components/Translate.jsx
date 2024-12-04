@@ -246,7 +246,7 @@ const Translate = ({ initialText, clear }) => {
                 <select
                   value={tgtLang}
                   onChange={(e) => setTgtLang(e.target.value)}
-                  className="select-option text-sm px-2 py-1 text-gray-600 border border-gray-300 rounded-md w-full"
+                  className="select-option text-sm px-2 py-1 text-gray-600 border border-gray-300 rounded-md w-full bg-white"
                 >
                   <option hidden>Select Language</option>
                   {supportedPairs[srcLang]?.map((lang) => (

@@ -143,7 +143,7 @@ function ChatInterface({ text, clear }) {
         <div className="chat-input flex items-center mt-4 border-t pt-4 w-full">
           <input
             type="text"
-            className="flex-grow p-3 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-400 transition-shadow duration-200"
+            className="flex-grow p-3 border border-gray-300 rounded-xl text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-400 transition-shadow duration-200 bg-white"
             placeholder="Type your message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}

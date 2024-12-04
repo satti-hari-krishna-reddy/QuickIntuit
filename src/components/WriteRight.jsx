@@ -170,7 +170,7 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
                   <select
                     value={selectedMode}
                     onChange={(e) => setSelectedMode(e.target.value)}
-                    className="text-sm px-3 py-2 text-gray-700 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                    className="text-sm px-3 py-2 text-gray-700 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 bg-white"
                   >
                     <option hidden>Select Mode</option>
                     {Object.keys(supportedModes).map((key) => (
@@ -189,7 +189,7 @@ const WriteRight = ({ initialText, clear, replaceText }) => {
                     <select
                       value={selectedTone}
                       onChange={(e) => setSelectedTone(e.target.value)}
-                      className="text-sm px-3 py-2 text-gray-700 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                      className="text-sm px-3 py-2 text-gray-700 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 bg-white"
                     >
                       <option hidden>Select Tone</option>
                       <option value="Confident">Confident</option>
